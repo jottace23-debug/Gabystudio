@@ -1,294 +1,373 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>GabyStudio · Reservas</title>
+<title>GabyStudio | La belleza es un arte</title>
 
-  <style>
-    *{
-      box-sizing:border-box;
-    }
+<style>
+*{
+  box-sizing:border-box;
+}
 
-    body{
-      margin:0;
-      font-family:Arial,Helvetica,sans-serif;
-      background:#fff8fb;
-      color:#2b2026;
-    }
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#fdf8f6;
+  color:#3d3033;
+}
 
-    .wrap{
-      max-width:720px;
-      margin:auto;
-      padding:30px 18px;
-    }
+.container{
+  width:min(920px,92%);
+  margin:auto;
+}
 
-    .card{
-      background:#ffffff;
-      border-radius:20px;
-      padding:24px;
-      box-shadow:0 8px 30px rgba(50,20,35,.08);
-    }
+/* PORTADA */
+.hero{
+  text-align:center;
+  padding:38px 20px 28px;
+  background:linear-gradient(180deg,#f8e4e8,#fdf8f6);
+}
 
-    h1{
-      margin:0 0 8px;
-      font-size:30px;
-    }
+.logo{
+  width:145px;
+  height:145px;
+  margin:auto;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:3px solid #c9a18b;
+  background:#fffaf8;
+  box-shadow:0 6px 20px rgba(100,60,60,.12);
+}
 
-    .intro{
-      margin:0 0 25px;
-      color:#75656d;
-      line-height:1.5;
-    }
+.logo-text{
+  font-family:Georgia,serif;
+  font-size:30px;
+  color:#a85f72;
+  line-height:1;
+}
 
-    label{
-      display:block;
-      margin:18px 0 8px;
-      font-weight:600;
-    }
+.logo-text small{
+  display:block;
+  margin-top:8px;
+  font-family:Arial,sans-serif;
+  font-size:10px;
+  letter-spacing:2px;
+  color:#8e766e;
+}
 
-    input,
-    select,
-    textarea{
-      width:100%;
-      padding:13px 14px;
-      border:1px solid #ead9e1;
-      border-radius:11px;
-      background:#fff;
-      font:inherit;
-      color:#2b2026;
-    }
+.hero h1{
+  margin:18px 0 5px;
+  font-family:Georgia,serif;
+  color:#a85f72;
+  font-size:34px;
+}
 
-    textarea{
-      min-height:90px;
-      resize:vertical;
-    }
+.tagline{
+  margin:0;
+  font-family:Georgia,serif;
+  font-style:italic;
+  color:#8b6b68;
+  font-size:17px;
+}
 
-    /* CATEGORÍAS */
+/* CONTENIDO */
+.card{
+  background:white;
+  margin:25px auto 45px;
+  padding:28px;
+  border-radius:20px;
+  box-shadow:0 8px 30px rgba(80,50,50,.10);
+}
 
-    .service-category{
-      margin-top:10px;
-      border:1px solid #ead9e1;
-      border-radius:13px;
-      overflow:hidden;
-      background:#fff;
-    }
+h2{
+  text-align:center;
+  font-family:Georgia,serif;
+  color:#a85f72;
+  margin-top:0;
+}
 
-    .category-button{
-      width:100%;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:16px;
-      border:0;
-      background:#fff;
-      color:#2b2026;
-      font-size:16px;
-      font-weight:700;
-      text-align:left;
-      cursor:pointer;
-    }
+.intro{
+  text-align:center;
+  color:#77686a;
+  line-height:1.6;
+  margin-bottom:25px;
+}
 
-    .category-button span{
-      font-size:22px;
-      line-height:1;
-    }
+/* FORMULARIO */
+.form-group{
+  margin-bottom:18px;
+}
 
-    .category-services{
-      display:none;
-      padding:0 10px 10px;
-    }
+label{
+  display:block;
+  margin-bottom:7px;
+  font-weight:bold;
+  color:#59484b;
+}
 
-    .category-services.open{
-      display:block;
-    }
+input,
+textarea{
+  width:100%;
+  padding:13px 14px;
+  border:1px solid #dfcfd0;
+  border-radius:10px;
+  font-size:15px;
+  background:#fffdfc;
+  color:#3d3033;
+  outline:none;
+}
 
-    /* SERVICIOS */
+input:focus,
+textarea:focus{
+  border-color:#b9798a;
+  box-shadow:0 0 0 3px rgba(185,121,138,.12);
+}
 
-    .service-option{
-      width:100%;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-top:6px;
-      padding:13px 12px;
-      border:1px solid transparent;
-      border-radius:10px;
-      background:#fff7fa;
-      color:#2b2026;
-      font:inherit;
-      text-align:left;
-      cursor:pointer;
-    }
+textarea{
+  min-height:90px;
+  resize:vertical;
+}
 
-    .service-option:hover{
-      background:#fff0f5;
-    }
+/* SERVICIOS */
+.service-picker label{
+  margin-bottom:10px;
+}
 
-    .service-option.selected{
-      border-color:#e6a9c2;
-      background:#fff0f5;
-    }
+.service-category{
+  margin-top:10px;
+  border:1px solid #e2cfd1;
+  border-radius:13px;
+  overflow:hidden;
+  background:#fffafa;
+}
 
-    .service-option strong{
-      white-space:nowrap;
-    }
+.category-button{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 16px;
+  border:0;
+  background:#f9e8eb;
+  color:#704d55;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
+  text-align:left;
+}
 
-    .selected-service{
-      margin-top:13px;
-      padding:13px;
-      border-radius:11px;
-      background:#fff0f5;
-      color:#633b4d;
-      font-size:14px;
-    }
+.category-button span{
+  font-size:21px;
+  color:#a85f72;
+}
 
-    /* RESUMEN */
+.category-services{
+  display:none;
+  padding:7px 10px 10px;
+  background:#fff;
+}
 
-    .summary{
-      margin-top:18px;
-      padding:15px;
-      border-radius:11px;
-      background:#faf3f6;
-      color:#5d4b54;
-      font-size:14px;
-      line-height:1.5;
-    }
+.category-services.open{
+  display:block;
+}
 
-    /* BOTÓN */
+.service-option{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:13px 12px;
+  margin-top:6px;
+  border:1px solid transparent;
+  border-radius:9px;
+  background:#faf5f4;
+  color:#4b3d40;
+  text-align:left;
+  cursor:pointer;
+  font-size:14px;
+}
 
-    .submit-booking{
-      width:100%;
-      margin-top:20px;
-      padding:15px;
-      border:0;
-      border-radius:12px;
-      background:#2b2026;
-      color:#fff;
-      font-size:16px;
-      font-weight:700;
-      cursor:pointer;
-    }
+.service-option:hover{
+  border-color:#d9b4bb;
+}
 
-    .submit-booking:hover{
-      opacity:.92;
-    }
+.service-option.selected{
+  background:#f3dce1;
+  border-color:#b9798a;
+}
 
-    .note{
-      margin-top:12px;
-      font-size:12px;
-      color:#806e77;
-      line-height:1.5;
-      text-align:center;
-    }
-  </style>
+.service-option strong{
+  white-space:nowrap;
+  color:#a85f72;
+}
+
+.selected-service{
+  margin-top:12px;
+  padding:12px;
+  border-radius:10px;
+  background:#f8eef0;
+  color:#75555c;
+  font-size:14px;
+}
+
+/* BOTÓN */
+.submit-button{
+  width:100%;
+  padding:15px;
+  margin-top:10px;
+  border:0;
+  border-radius:12px;
+  background:#a85f72;
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.submit-button:hover{
+  background:#914f61;
+}
+
+/* RESUMEN */
+.summary{
+  margin-top:18px;
+  padding:15px;
+  border-radius:12px;
+  background:#faf1f2;
+  border:1px solid #ead7da;
+  font-size:14px;
+  line-height:1.6;
+}
+
+/* PIE */
+.footer{
+  text-align:center;
+  padding:0 20px 30px;
+  color:#8b7779;
+  font-size:13px;
+}
+
+@media(max-width:600px){
+  .hero{
+    padding-top:25px;
+  }
+
+  .logo{
+    width:125px;
+    height:125px;
+  }
+
+  .logo-text{
+    font-size:26px;
+  }
+
+  .hero h1{
+    font-size:29px;
+  }
+
+  .card{
+    padding:20px 16px;
+  }
+}
+</style>
 </head>
 
 <body>
 
-<main class="wrap">
+<header class="hero">
 
-  <div class="card">
+  <div class="logo">
+    <div class="logo-text">
+      Gaby
+      <small>STUDIO</small>
+    </div>
+  </div>
 
-    <h1>GabyStudio</h1>
+  <h1>GabyStudio</h1>
+  <p class="tagline">La belleza es un arte</p>
+
+</header>
+
+<main class="container">
+
+  <section class="card">
+
+    <h2>Reserva tu cita</h2>
 
     <p class="intro">
-      Reserva tu cita seleccionando primero una categoría
-      y luego el servicio que deseas.
+      Elige tu servicio, fecha y horario preferido.
+      Te contactaremos para confirmar tu reserva.
     </p>
 
     <form id="reservationForm">
 
       <!-- SERVICIO -->
-
-      <div class="service-picker">
+      <div class="form-group service-picker">
 
         <label>Servicio</label>
 
         <div class="service-categories">
 
           <!-- DEPILACIÓN -->
-
           <div class="service-category">
 
-            <button
-              type="button"
-              class="category-button"
-            >
+            <button type="button" class="category-button">
               ✨ Depilación
               <span>＋</span>
             </button>
 
             <div class="category-services">
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="7"
-                data-duration="30 min"
-              >
+                data-duration="30 min">
                 <span>Cejas</span>
                 <strong>$7</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="3"
-                data-duration="5 min"
-              >
+                data-duration="5 min">
                 <span>Depilación de bozo</span>
                 <strong>$3</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="3"
-                data-duration="10 min"
-              >
+                data-duration="10 min">
                 <span>Mentón</span>
                 <strong>$3</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="7"
-                data-duration="15 min"
-              >
+                data-duration="15 min">
                 <span>Depilación de axilas</span>
                 <strong>$7</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="10"
-                data-duration="30 min"
-              >
+                data-duration="30 min">
                 <span>Depilación facial</span>
                 <strong>$10</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="15"
-                data-duration="30 min"
-              >
+                data-duration="30 min">
                 <span>Media pierna</span>
                 <strong>$15</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="20"
-                data-duration="60 min"
-              >
+                data-duration="60 min">
                 <span>Pierna completa</span>
                 <strong>$20</strong>
               </button>
@@ -296,47 +375,33 @@
             </div>
           </div>
 
-
           <!-- CEJAS -->
-
           <div class="service-category">
 
-            <button
-              type="button"
-              class="category-button"
-            >
+            <button type="button" class="category-button">
               ✨ Cejas
               <span>＋</span>
             </button>
 
             <div class="category-services">
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="10"
-                data-duration="30 min"
-              >
+                data-duration="30 min">
                 <span>Epilación, diseño y pigmentación</span>
                 <strong>$10</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="9"
-                data-duration="30 min"
-              >
+                data-duration="30 min">
                 <span>Cejas + bozo</span>
                 <strong>$9</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="17"
-                data-duration="60 min"
-              >
+                data-duration="60 min">
                 <span>Laminado de cejas</span>
                 <strong>$17</strong>
               </button>
@@ -344,127 +409,89 @@
             </div>
           </div>
 
-
           <!-- PESTAÑAS -->
-
           <div class="service-category">
 
-            <button
-              type="button"
-              class="category-button"
-            >
+            <button type="button" class="category-button">
               ✨ Pestañas
               <span>＋</span>
             </button>
 
             <div class="category-services">
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="10"
-                data-duration="30 min"
-              >
+                data-duration="30 min">
                 <span>Pestañas por punto</span>
                 <strong>$10</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="20"
-                data-duration="90 min"
-              >
+                data-duration="90 min">
                 <span>Pelo a pelo clásicas</span>
                 <strong>$20</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="22"
-                data-duration="90 min"
-              >
+                data-duration="90 min">
                 <span>Efecto rímel</span>
                 <strong>$22</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="25"
-                data-duration="120 min"
-              >
+                data-duration="120 min">
                 <span>Efecto hawaiano</span>
                 <strong>$25</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="25"
-                data-duration="120 min"
-              >
+                data-duration="120 min">
                 <span>Efecto egipcio 3D</span>
                 <strong>$25</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="25"
-                data-duration="120 min"
-              >
+                data-duration="120 min">
                 <span>Efecto Aurora 4D</span>
                 <strong>$25</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="23"
-                data-duration="120 min"
-              >
+                data-duration="120 min">
                 <span>Marrones 2D</span>
                 <strong>$23</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="17"
-                data-duration="60 min"
-              >
+                data-duration="60 min">
                 <span>Lifting de pestañas</span>
                 <strong>$17</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="32"
-                data-duration="150 min"
-              >
+                data-duration="150 min">
                 <span>Volumen R</span>
                 <strong>$32</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="5"
-                data-duration="15 min"
-              >
+                data-duration="15 min">
                 <span>Remoción de pestañas</span>
                 <strong>$5</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="17"
-                data-duration="60 min"
-              >
+                data-duration="60 min">
                 <span>Retoque de pestañas</span>
                 <strong>$17</strong>
               </button>
@@ -472,77 +499,54 @@
             </div>
           </div>
 
-
           <!-- FACIALES -->
-
           <div class="service-category">
 
-            <button
-              type="button"
-              class="category-button"
-            >
+            <button type="button" class="category-button">
               ✨ Faciales y micropigmentación
               <span>＋</span>
             </button>
 
             <div class="category-services">
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="20"
-                data-duration="90 min"
-              >
+                data-duration="90 min">
                 <span>Limpieza facial profunda</span>
                 <strong>$20</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="40"
-                data-duration="90 min"
-              >
+                data-duration="90 min">
                 <span>Plasma rico en plaquetas</span>
                 <strong>$40</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="8"
-                data-duration="30 min"
-              >
+                data-duration="30 min">
                 <span>Cauterización de acrocordones (desde)</span>
                 <strong>$8</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="65"
-                data-duration="120 min"
-              >
+                data-duration="120 min">
                 <span>Micropigmentación de cejas</span>
                 <strong>$65</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="65"
-                data-duration="120 min"
-              >
+                data-duration="120 min">
                 <span>Microblading de cejas</span>
                 <strong>$65</strong>
               </button>
 
-              <button
-                type="button"
-                class="service-option"
+              <button type="button" class="service-option"
                 data-price="65"
-                data-duration="120 min"
-              >
+                data-duration="120 min">
                 <span>Micropigmentación de labios</span>
                 <strong>$65</strong>
               </button>
@@ -552,26 +556,18 @@
 
         </div>
 
-        <input
-          type="hidden"
-          id="service"
-          name="service"
-        >
+        <input type="hidden" id="service" name="service">
 
-        <div
-          id="selectedService"
-          class="selected-service"
-        >
+        <div id="selectedService" class="selected-service">
           Selecciona un servicio
         </div>
 
       </div>
 
-
       <!-- FECHA -->
+      <div class="form-group">
 
-      <label>
-        Fecha deseada
+        <label for="date">Fecha</label>
 
         <input
           type="date"
@@ -579,218 +575,205 @@
           name="date"
           required
         >
-      </label>
 
+      </div>
 
       <!-- HORA -->
+      <div class="form-group">
 
-      <label>
-        Hora deseada
+        <label for="time">Hora</label>
 
         <select
           id="time"
           name="time"
           required
+          style="width:100%;padding:13px 14px;border:1px solid #dfcfd0;border-radius:10px;font-size:15px;background:#fffdfc;"
         >
-          <option value="">
-            Selecciona una hora
-          </option>
+
+          <option value="">Selecciona una hora</option>
+
         </select>
 
-      </label>
-
+      </div>
 
       <!-- NOMBRE -->
+      <div class="form-group">
 
-      <label>
-        Nombre completo
+        <label for="name">Nombre</label>
 
         <input
           type="text"
           id="name"
           name="name"
-          placeholder="Tu nombre y apellido"
+          placeholder="Tu nombre"
           required
-          maxlength="100"
         >
-      </label>
 
+      </div>
 
       <!-- TELÉFONO -->
+      <div class="form-group">
 
-      <label>
-        Teléfono / WhatsApp
+        <label for="phone">Teléfono</label>
 
         <input
           type="tel"
           id="phone"
           name="phone"
-          placeholder="Tu número de contacto"
+          placeholder="Tu número de teléfono"
           required
-          maxlength="30"
         >
-      </label>
 
+      </div>
 
       <!-- EMAIL -->
+      <div class="form-group">
 
-      <label>
-        Correo (opcional)
+        <label for="email">Correo electrónico</label>
 
         <input
           type="email"
           id="email"
           name="email"
-          placeholder="tu@email.com"
-          maxlength="120"
+          placeholder="Opcional"
         >
-      </label>
 
+      </div>
 
       <!-- NOTAS -->
+      <div class="form-group">
 
-      <label>
-        Notas (opcional)
+        <label for="notes">Notas</label>
 
         <textarea
           id="notes"
           name="notes"
-          placeholder="Alguna información adicional"
+          placeholder="Alguna información adicional..."
         ></textarea>
-      </label>
 
+      </div>
 
       <!-- RESUMEN -->
-
-      <div
-        id="bookingSummary"
-        class="summary"
-      >
+      <div id="bookingSummary" class="summary">
         Selecciona un servicio para ver el resumen de tu solicitud.
       </div>
 
-
-      <!-- BOTÓN -->
-
       <button
-        class="submit-booking"
         type="submit"
+        class="submit-button"
       >
-        Solicitar cita por WhatsApp ↗
+        Solicitar reserva
       </button>
-
-      <p class="note">
-        La solicitud queda pendiente hasta que GabyStudio confirme
-        la disponibilidad.
-      </p>
 
     </form>
 
-  </div>
+  </section>
 
 </main>
+
+<footer class="footer">
+  GabyStudio · La belleza es un arte
+</footer>
 
 
 <script>
 
-  /* =========================
-     ELEMENTOS
-  ========================= */
+/* ============================
+   ELEMENTOS
+============================ */
 
-  const form =
-    document.getElementById("reservationForm");
+const form = document.getElementById("reservationForm");
 
-  const service =
-    document.getElementById("service");
+const service = document.getElementById("service");
+const date = document.getElementById("date");
+const time = document.getElementById("time");
 
-  const date =
-    document.getElementById("date");
+const summary = document.getElementById("bookingSummary");
 
-  const time =
-    document.getElementById("time");
-
-  const summary =
-    document.getElementById("bookingSummary");
-
-  const selectedService =
-    document.getElementById("selectedService");
-
-  const wa =
-    "584242087674";
+const wa = "584242087674";
 
 
-  /* =========================
-     FECHA MÍNIMA
-  ========================= */
+/* ============================
+   SUPABASE
+============================ */
 
-  const today = new Date();
+const SUPABASE_URL =
+  "https://srabrfcodvmgzezilpex.supabase.co";
 
-  today.setMinutes(
-    today.getMinutes() -
-    today.getTimezoneOffset()
-  );
-
-  date.min =
-    today.toISOString().slice(0,10);
+const SUPABASE_ANON_KEY =
+  "TU_CLAVE_SUPABASE";
 
 
-  /* =========================
-     HORARIOS
-  ========================= */
+/* ============================
+   FECHA MÍNIMA
+============================ */
 
-  for(let h = 9; h < 18; h++){
+const today = new Date();
 
-    for(const m of [0,30]){
+today.setMinutes(
+  today.getMinutes() -
+  today.getTimezoneOffset()
+);
 
-      /*
-        No mostrar 5:30 p. m.
-      */
+date.min = today
+  .toISOString()
+  .slice(0,10);
 
-      if(h === 17 && m === 30){
-        continue;
-      }
 
-      const value =
-        String(h).padStart(2,"0") +
-        ":" +
-        String(m).padStart(2,"0");
+/* ============================
+   HORARIOS
+============================ */
 
-      const option =
-        document.createElement("option");
+console.log("GENERANDO HORAS", time);
 
-      option.value = value;
+for(let h=9; h<18; h++){
 
-      const hour12 =
-        h % 12 || 12;
+  for(let m of [0,30]){
 
-      option.textContent =
-        hour12 +
-        ":" +
-        String(m).padStart(2,"0") +
-        " " +
-        (h < 12 ? "a. m." : "p. m.");
+    if(h===17 && m===30) continue;
 
-      time.appendChild(option);
-    }
+    const v =
+      String(h).padStart(2,"0") +
+      ":" +
+      String(m).padStart(2,"0");
+
+    const opt =
+      document.createElement("option");
+
+    opt.value = v;
+
+    const hh = h % 12 || 12;
+
+    opt.textContent =
+      hh +
+      ":" +
+      String(m).padStart(2,"0") +
+      " " +
+      (h<12 ? "a. m." : "p. m.");
+
+    time.appendChild(opt);
+
   }
 
+}
 
-  /* =========================
-     DOMINGOS
-  ========================= */
 
-  date.addEventListener("change", () => {
+/* ============================
+   DOMINGOS
+============================ */
 
-    if(!date.value){
-      return;
-    }
+date.addEventListener(
+  "change",
+  () => {
+
+    if(!date.value) return;
 
     const d =
       new Date(
         date.value + "T12:00:00"
       );
 
-    if(d.getDay() === 0){
+    if(d.getDay()===0){
 
       date.setCustomValidity(
         "GabyStudio no atiende los domingos. Elige otro día."
@@ -798,7 +781,7 @@
 
       date.reportValidity();
 
-      date.value = "";
+      date.value="";
 
     }else{
 
@@ -806,18 +789,21 @@
 
     }
 
-  });
+  }
+);
 
 
-  /* =========================
-     CATEGORÍAS
-  ========================= */
+/* ============================
+   CATEGORÍAS
+============================ */
 
-  document
-    .querySelectorAll(".category-button")
-    .forEach(button => {
+document
+  .querySelectorAll(".category-button")
+  .forEach(button => {
 
-      button.addEventListener("click", () => {
+    button.addEventListener(
+      "click",
+      () => {
 
         const category =
           button.parentElement;
@@ -834,10 +820,6 @@
           services.classList.contains("open");
 
 
-        /*
-          Cerrar todas
-        */
-
         document
           .querySelectorAll(".category-services")
           .forEach(item => {
@@ -851,43 +833,55 @@
           .querySelectorAll(".category-button span")
           .forEach(item => {
 
-            item.textContent = "＋";
+            item.textContent="＋";
 
           });
 
-
-        /*
-          Abrir la seleccionada
-        */
 
         if(!isOpen){
 
           services.classList.add("open");
 
-          icon.textContent = "−";
+          icon.textContent="−";
 
         }
 
-      });
+      }
+    );
 
-    });
+  });
 
 
-  /* =========================
-     SELECCIONAR SERVICIO
-  ========================= */
+/* ============================
+   SELECCIÓN DE SERVICIO
+============================ */
 
-  document
-    .querySelectorAll(".service-option")
-    .forEach(button => {
+document
+  .querySelectorAll(".service-option")
+  .forEach(button => {
 
-      button.addEventListener("click", () => {
+    button.addEventListener(
+      "click",
+      () => {
+
+        const selectedService =
+          document.getElementById(
+            "selectedService"
+          );
+
+        const hiddenService =
+          document.getElementById(
+            "service"
+          );
+
 
         const nameElement =
           button.querySelector("span");
 
         const serviceName =
-          nameElement.textContent.trim();
+          nameElement
+            .textContent
+            .trim();
 
         const price =
           button.dataset.price;
@@ -896,17 +890,9 @@
           button.dataset.duration;
 
 
-        /*
-          Guardar servicio
-        */
-
-        service.value =
+        hiddenService.value =
           serviceName;
 
-
-        /*
-          Mostrar selección
-        */
 
         selectedService.textContent =
           "✓ " +
@@ -917,10 +903,6 @@
           duration;
 
 
-        /*
-          Quitar selección anterior
-        */
-
         document
           .querySelectorAll(".service-option")
           .forEach(item => {
@@ -930,29 +912,11 @@
           });
 
 
-        /*
-          Marcar seleccionado
-        */
-
         button.classList.add("selected");
 
 
-        /*
-          Actualizar resumen
-        */
+        update();
 
-        summary.textContent =
-          "Servicio: " +
-          serviceName +
-          " · Precio: $" +
-          price +
-          " USD · Duración estimada: " +
-          duration;
-
-
-        /*
-          Cerrar categorías
-        */
 
         document
           .querySelectorAll(".category-services")
@@ -967,278 +931,284 @@
           .querySelectorAll(".category-button span")
           .forEach(item => {
 
-            item.textContent = "＋";
+            item.textContent="＋";
 
           });
 
-      });
-
-    });
-
-
-  /* =========================
-     ENVÍO
-  ========================= */
-
-  form.addEventListener(
-    "submit",
-    async (e) => {
-
-      e.preventDefault();
-
-
-      /*
-        Verificar servicio
-      */
-
-      if(!service.value){
-
-        alert(
-          "Selecciona un servicio antes de continuar."
-        );
-
-        return;
-
       }
+    );
 
+  });
 
-      /*
-        Verificar formulario
-      */
 
-      if(!form.reportValidity()){
+/* ============================
+   RESUMEN
+============================ */
 
-        return;
+function update(){
 
-      }
+  const selectedButton =
+    document.querySelector(
+      ".service-option.selected"
+    );
 
 
-      /*
-        Obtener servicio seleccionado
-      */
+  if(
+    selectedButton &&
+    service.value
+  ){
 
-      const selectedButton =
-        document.querySelector(
-          ".service-option.selected"
-        );
+    summary.textContent =
+      "Servicio: " +
+      service.value +
+      " · Precio: $" +
+      selectedButton.dataset.price +
+      " USD · Duración estimada: " +
+      selectedButton.dataset.duration;
 
+  }else{
 
-      if(!selectedButton){
+    summary.textContent =
+      "Selecciona un servicio para ver el resumen de tu solicitud.";
 
-        alert(
-          "Selecciona un servicio antes de continuar."
-        );
+  }
 
-        return;
+}
 
-      }
 
+/* ============================
+   ENVÍO DE RESERVA
+============================ */
 
-      /* =========================
-         DATOS DE RESERVA
-      ========================= */
+form.addEventListener(
+  "submit",
+  async e => {
 
-      const reserva = {
+    e.preventDefault();
 
-        servicio:
-          service.value,
 
-        precio:
-          Number(
-            selectedButton.dataset.price
-          ),
+    if(!service.value){
 
-        fecha:
-          date.value,
+      alert(
+        "Selecciona un servicio."
+      );
 
-        hora:
-          time.value,
-
-        nombre:
-          document
-            .getElementById("name")
-            .value,
-
-        telefono:
-          document
-            .getElementById("phone")
-            .value,
-
-        email:
-          document
-            .getElementById("email")
-            .value ||
-          null,
-
-        notas:
-          document
-            .getElementById("notes")
-            .value ||
-          null,
-
-        estado:
-          "pendiente"
-
-      };
-
-
-      /* =========================
-         SUPABASE
-      ========================= */
-
-      const SUPABASE_URL =
-        "https://srabrfcodvmgzezilpex.supabase.co";
-
-
-      /*
-        IMPORTANTE:
-        coloca aquí tu clave anon/public.
-      */
-
-      const SUPABASE_ANON_KEY =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWJyZmNvZHZtZ3plemlscGV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExNjczMzIsImV4cCI6MjEwNjc0MzMzMn0.1x5ASVNHJyqqmGai8pLbjoNlifUScUkxuNmhvZxRels";
-
-
-      try{
-
-        const respuesta =
-          await fetch(
-            SUPABASE_URL +
-            "/rest/v1/reservas",
-            {
-              method:"POST",
-
-              headers:{
-
-                "apikey":
-                  SUPABASE_ANON_KEY,
-
-                "Authorization":
-                  "Bearer " +
-                  SUPABASE_ANON_KEY,
-
-                "Content-Type":
-                  "application/json",
-
-                "Prefer":
-                  "return=minimal"
-
-              },
-
-              body:
-                JSON.stringify(reserva)
-
-            }
-          );
-
-
-        if(!respuesta.ok){
-
-          throw new Error(
-            await respuesta.text()
-          );
-
-        }
-
-
-        /* =========================
-           FECHA PARA WHATSAPP
-        ========================= */
-
-        const prettyDate =
-          new Date(
-            date.value +
-            "T12:00:00"
-          ).toLocaleDateString(
-            "es-VE",
-            {
-              weekday:"long",
-              year:"numeric",
-              month:"long",
-              day:"numeric"
-            }
-          );
-
-
-        /* =========================
-           MENSAJE WHATSAPP
-        ========================= */
-
-        const msg = [
-
-          "Hola, GabyStudio. Quiero solicitar una cita:",
-
-          "",
-
-          "Servicio: " +
-            reserva.servicio,
-
-          "Precio publicado: $" +
-            reserva.precio +
-            " USD",
-
-          "Fecha deseada: " +
-            prettyDate,
-
-          "Hora deseada: " +
-            time.options[
-              time.selectedIndex
-            ].text,
-
-          "Nombre: " +
-            reserva.nombre,
-
-          "Teléfono: " +
-            reserva.telefono,
-
-          "Correo: " +
-            (
-              reserva.email ||
-              "No indicado"
-            ),
-
-          "Notas: " +
-            (
-              reserva.notas ||
-              "Ninguna"
-            ),
-
-          "",
-
-          "Entiendo que la cita queda pendiente hasta que me confirmen disponibilidad."
-
-        ].join("\n");
-
-
-        /* =========================
-           ABRIR WHATSAPP
-        ========================= */
-
-        window.open(
-          "https://wa.me/" +
-          wa +
-          "?text=" +
-          encodeURIComponent(msg),
-          "_blank",
-          "noopener"
-        );
-
-
-      }catch(error){
-
-        console.error(
-          "ERROR:",
-          error
-        );
-
-        alert(
-          "No se pudo guardar la solicitud. Inténtalo nuevamente."
-        );
-
-      }
+      return;
 
     }
-  );
+
+
+    if(!form.reportValidity()) return;
+
+
+    const selectedButton =
+      document.querySelector(
+        ".service-option.selected"
+      );
+
+
+    if(!selectedButton){
+
+      alert(
+        "Selecciona un servicio."
+      );
+
+      return;
+
+    }
+
+
+    const reserva = {
+
+      servicio:
+        service.value,
+
+      precio:
+        Number(
+          selectedButton.dataset.price
+        ),
+
+      fecha:
+        date.value,
+
+      hora:
+        time.value,
+
+      nombre:
+        document.getElementById(
+          "name"
+        ).value,
+
+      telefono:
+        document.getElementById(
+          "phone"
+        ).value,
+
+      email:
+        document.getElementById(
+          "email"
+        ).value || null,
+
+      notas:
+        document.getElementById(
+          "notes"
+        ).value || null,
+
+      estado:
+        "pendiente"
+
+    };
+
+
+    try{
+
+      const respuesta =
+        await fetch(
+          SUPABASE_URL +
+          "/rest/v1/reservas",
+          {
+
+            method:"POST",
+
+            headers:{
+
+              "apikey":
+                SUPABASE_ANON_KEY,
+
+              "Authorization":
+                "Bearer " +
+                SUPABASE_ANON_KEY,
+
+              "Content-Type":
+                "application/json",
+
+              "Prefer":
+                "return=minimal"
+
+            },
+
+            body:
+              JSON.stringify(reserva)
+
+          }
+        );
+
+
+      if(!respuesta.ok){
+
+        const errorText =
+          await respuesta.text();
+
+        console.error(
+          "Supabase:",
+          errorText
+        );
+
+        throw new Error(
+          "No se pudo guardar la reserva."
+        );
+
+      }
+
+
+      const mensaje =
+        "Hola GabyStudio 💕" +
+        "\n\n" +
+        "Quiero solicitar una reserva." +
+        "\n\n" +
+        "Servicio: " +
+        service.value +
+        "\n" +
+        "Precio publicado: $" +
+        selectedButton.dataset.price +
+        " USD" +
+        "\n" +
+        "Fecha: " +
+        date.value +
+        "\n" +
+        "Hora: " +
+        time.options[
+          time.selectedIndex
+        ].text +
+        "\n" +
+        "Nombre: " +
+        reserva.nombre +
+        "\n" +
+        "Teléfono: " +
+        reserva.telefono +
+        "\n" +
+        (
+          reserva.email
+          ? "Email: " +
+            reserva.email +
+            "\n"
+          : ""
+        ) +
+        (
+          reserva.notas
+          ? "Notas: " +
+            reserva.notas +
+            "\n"
+          : ""
+        ) +
+        "\n" +
+        "Quedo pendiente de la confirmación. 💕";
+
+
+      const whatsappURL =
+        "https://wa.me/" +
+        wa +
+        "?text=" +
+        encodeURIComponent(
+          mensaje
+        );
+
+
+      alert(
+        "¡Solicitud enviada correctamente! 💕"
+      );
+
+
+      window.open(
+        whatsappURL,
+        "_blank"
+      );
+
+
+      form.reset();
+
+      service.value="";
+
+      document.getElementById(
+        "selectedService"
+      ).textContent =
+        "Selecciona un servicio";
+
+      document
+        .querySelectorAll(".service-option")
+        .forEach(item => {
+
+          item.classList.remove(
+            "selected"
+          );
+
+        });
+
+      update();
+
+
+    }catch(error){
+
+      console.error(error);
+
+      alert(
+        "No se pudo guardar la reserva. Revisa la conexión con Supabase."
+      );
+
+    }
+
+  }
+);
 
 </script>
 
