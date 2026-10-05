@@ -159,8 +159,8 @@ alert("GabyStudio funciona");
     const msg = [
       "Hola, GabyStudio. Quiero solicitar una cita:",
       "",
-      "Servicio: " + o.textContent,
-      "Precio publicado: $" + o.dataset.price + " USD",
+      "Servicio: " + service.value,
+"Precio publicado: $" + document.querySelector(".service-option.selected").dataset.price + " USD",
       "Fecha deseada: " + prettyDate,
       "Hora deseada: " + time.options[time.selectedIndex].text,
       "Nombre: " + reserva.nombre,
