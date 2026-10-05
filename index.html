@@ -48,8 +48,81 @@
  for(let h=9;h<18;h++){ for(let m of [0,30]){ if(h===17&&m===30) continue; const v=String(h).padStart(2,"0")+":"+String(m).padStart(2,"0"); const opt=document.createElement("option"); opt.value=v; const hh=h%12||12; opt.textContent=hh+":"+String(m).padStart(2,"0")+" "+(h<12?"a. m.":"p. m."); time.appendChild(opt); }}
  date.addEventListener("change",()=>{ if(!date.value)return; const d=new Date(date.value+"T12:00:00"); if(d.getDay()===0){date.setCustomValidity("GabyStudio no atiende los domingos. Elige otro día.");date.reportValidity();date.value="";}else date.setCustomValidity(""); });
  function update(){ const o=service.options[service.selectedIndex]; summary.textContent=o&&o.dataset.price?"Servicio: "+o.textContent+" · Precio: $"+o.dataset.price+" USD · Duración estimada: "+o.dataset.duration:"Selecciona un servicio para ver el resumen de tu solicitud."; } service.addEventListener("change",update);
- form.addEventListener("submit",e=>{e.preventDefault(); if(!form.reportValidity())return; const o=service.options[service.selectedIndex]; const prettyDate=new Date(date.value+"T12:00:00").toLocaleDateString("es-VE",{weekday:"long",year:"numeric",month:"long",day:"numeric"}); const msg=["Hola, GabyStudio. Quiero solicitar una cita:","","Servicio: "+o.textContent,"Precio publicado: $"+o.dataset.price+" USD","Fecha deseada: "+prettyDate,"Hora deseada: "+time.options[time.selectedIndex].text,"Nombre: "+document.getElementById("name").value,"Teléfono: "+document.getElementById("phone").value,"Correo: "+(document.getElementById("email").value||"No indicado"),"Notas: "+(document.getElementById("notes").value||"Ninguna"),"","Entiendo que la cita queda pendiente hasta que me confirmen disponibilidad."].join("\n"); window.open("https://wa.me/"+wa+"?text="+encodeURIComponent(msg),"_blank","noopener"); });
- document.querySelectorAll(".book-link").forEach(a=>{a.href="#reservar";a.removeAttribute("target");a.removeAttribute("data-url");a.textContent="Solicitar cita ↓";});
-})();
+ form.addEventListener("submit", async e => {
+  e.preventDefault();
+
+  if (!form.reportValidity()) return;
+
+  const o = service.options[service.selectedIndex];
+
+  const reserva = {
+    servicio: o.textContent,
+    precio: Number(o.dataset.price),
+    fecha: date.value,
+    hora: time.options[time.selectedIndex].text,
+    nombre: document.getElementById("name").value,
+    telefono: document.getElementById("phone").value,
+    email: document.getElementById("email").value || null,
+    notas: document.getElementById("notes").value || null,
+    estado: "pendiente"
+  };
+
+  const SUPABASE_URL = "https://srabrfcodvmgzezilpex.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWJyZmNvZHZtZ3plemlscGV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExNjczMzIsImV4cCI6MjEwNjc0MzMzMn0.1x5ASVNHJyqqmGai8pLbjoNlifUScUkxuNmhvZxRels";
+
+  try {
+    const respuesta = await fetch(
+      SUPABASE_URL + "/rest/v1/reservas",
+      {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+          "Content-Type": "application/json",
+          "Prefer": "return=minimal"
+        },
+        body: JSON.stringify(reserva)
+      }
+    );
+
+    if (!respuesta.ok) {
+      throw new Error(await respuesta.text());
+    }
+
+    const prettyDate = new Date(
+      date.value + "T12:00:00"
+    ).toLocaleDateString("es-VE", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+
+    const msg = [
+      "Hola, GabyStudio. Quiero solicitar una cita:",
+      "",
+      "Servicio: " + o.textContent,
+      "Precio publicado: $" + o.dataset.price + " USD",
+      "Fecha deseada: " + prettyDate,
+      "Hora deseada: " + time.options[time.selectedIndex].text,
+      "Nombre: " + reserva.nombre,
+      "Teléfono: " + reserva.telefono,
+      "Correo: " + (reserva.email || "No indicado"),
+      "Notas: " + (reserva.notas || "Ninguna"),
+      "",
+      "Entiendo que la cita queda pendiente hasta que me confirmen disponibilidad."
+    ].join("\n");
+
+    window.open(
+      "https://wa.me/" + wa + "?text=" + encodeURIComponent(msg),
+      "_blank",
+      "noopener"
+    );
+
+  } catch (error) {
+    console.error(error);
+    alert("No se pudo guardar la solicitud. Inténtalo nuevamente.");
+  }
+});
 </script>
 </body></html>
