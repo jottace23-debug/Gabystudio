@@ -81,106 +81,302 @@
 <section class="section contact" id="contacto"><div class="wrap"><div class="section-head"><div class="eyebrow" style="color:#f2b7cf">Estamos para ti</div><h2>Hablemos de tu próxima cita</h2><p>Escríbenos para consultar un servicio o resolver tus dudas.</p></div><div class="contact-grid"><div class="contact-card"><h3>Instagram</h3><p>Sigue nuestros trabajos y novedades.</p><a href="https://www.instagram.com/gaby_studio28/" target="_blank" rel="noopener">@Gaby_Studio28 ↗</a></div><div class="contact-card"><h3>WhatsApp / Teléfono</h3><p>Contáctanos para consultas.</p><a href="https://wa.me/584242087674" target="_blank" rel="noopener">0424-2087674 ↗</a><p class="fine" style="color:#e8cbd8">Verifica que el enlace abra tu WhatsApp correcto antes de publicar.</p></div></div></div></section></main>
 <footer class="footer"><div class="wrap">© GabyStudio · La belleza es un arte · Reservas con cita previa</div></footer><a class="floating" href="https://wa.me/584242087674" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">WhatsApp</a>
 <script>
-alert("GabyStudio funciona");
- const form=document.getElementById("reservationForm");
- alert("EL SCRIPT ESTÁ FUNCIONANDO");
- const service=document.getElementById("service"), date=document.getElementById("date"), time=document.getElementById("time"), summary=document.getElementById("bookingSummary");
- const wa="584242087674";
- const today=new Date(); today.setMinutes(today.getMinutes()-today.getTimezoneOffset()); date.min=today.toISOString().slice(0,10);
- console.log("GENERANDO HORAS", time);for(let h=9;h<18;h++) for(let h=9;h<18;h++){
-  for(let m of [0,30]){
-    if(h===17&&m===30) continue;
+const form = document.getElementById("reservationForm");
+alert("EL SCRIPT ESTÁ FUNCIONANDO");
 
-    const v=String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");
-    const opt=document.createElement("option");
+const service = document.getElementById("service");
+const date = document.getElementById("date");
+const time = document.getElementById("time");
+const summary = document.getElementById("bookingSummary");
+const wa = "584242087674";
 
-    opt.value=v;
+const today = new Date();
+today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+date.min = today.toISOString().slice(0, 10);
 
-    const hh=h%12||12;
-    opt.textContent=hh+":"+String(m).padStart(2,"0")+" "+(h<12?"a. m.":"p. m.");
+
+/* HORARIOS */
+console.log("GENERANDO HORAS", time);
+
+for (let h = 9; h < 18; h++) {
+  for (let m of [0, 30]) {
+
+    if (h === 17 && m === 30) continue;
+
+    const v =
+      String(h).padStart(2, "0") +
+      ":" +
+      String(m).padStart(2, "0");
+
+    const opt = document.createElement("option");
+
+    opt.value = v;
+
+    const hh = h % 12 || 12;
+
+    opt.textContent =
+      hh +
+      ":" +
+      String(m).padStart(2, "0") +
+      " " +
+      (h < 12 ? "a. m." : "p. m.");
 
     time.appendChild(opt);
   }
 }
+
+
+/* FECHA */
+date.addEventListener("change", () => {
+
+  if (!date.value) return;
+
+  const d = new Date(date.value + "T12:00:00");
+
+  if (d.getDay() === 0) {
+
+    date.setCustomValidity(
+      "GabyStudio no atiende los domingos. Elige otro día."
+    );
+
+    date.reportValidity();
+    date.value = "";
+
+  } else {
+
+    date.setCustomValidity("");
   }
-}
- date.addEventListener("change",()=>{ if(!date.value)return; const d=new Date(date.value+"T12:00:00"); if(d.getDay()===0){date.setCustomValidity("GabyStudio no atiende los domingos. Elige otro día.");date.reportValidity();date.value="";}else date.setCustomValidity(""); });
- function update(){ const o=service.options[service.selectedIndex]; summary.textContent=o&&o.dataset.price?"Servicio: "+o.textContent+" · Precio: $"+o.dataset.price+" USD · Duración estimada: "+o.dataset.duration:"Selecciona un servicio para ver el resumen de tu solicitud."; } service.addEventListener("change",update);
- form.addEventListener("submit", async e => {
+});
+
+
+/* CATEGORÍAS */
+document.querySelectorAll(".category-button").forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    const category = button.parentElement;
+    const services = category.querySelector(".category-services");
+    const icon = button.querySelector("span");
+
+    const isOpen = services.classList.contains("open");
+
+    document.querySelectorAll(".category-services").forEach(item => {
+      item.classList.remove("open");
+    });
+
+    document.querySelectorAll(".category-button span").forEach(item => {
+      item.textContent = "＋";
+    });
+
+    if (!isOpen) {
+      services.classList.add("open");
+      icon.textContent = "−";
+    }
+
+  });
+
+});
+
+
+/* SELECCIONAR SERVICIO */
+document.querySelectorAll(".service-option").forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    const selectedService =
+      document.getElementById("selectedService");
+
+    const serviceName =
+      button.textContent
+        .replace(/\s+\$[\d.]+$/, "")
+        .trim();
+
+    const price = button.dataset.price;
+    const duration = button.dataset.duration;
+
+    service.value = serviceName;
+
+    selectedService.textContent =
+      "✓ " +
+      serviceName +
+      " — $" +
+      price +
+      " · " +
+      duration;
+
+    document.querySelectorAll(".service-option").forEach(item => {
+      item.classList.remove("selected");
+    });
+
+    button.classList.add("selected");
+
+    summary.textContent =
+      "Servicio: " +
+      serviceName +
+      " · Precio: $" +
+      price +
+      " USD · Duración estimada: " +
+      duration;
+
+    document.querySelectorAll(".category-services").forEach(item => {
+      item.classList.remove("open");
+    });
+
+    document.querySelectorAll(".category-button span").forEach(item => {
+      item.textContent = "＋";
+    });
+
+  });
+
+});
+
+
+/* ENVIAR RESERVA */
+form.addEventListener("submit", async e => {
+
   e.preventDefault();
 
   if (!form.reportValidity()) return;
 
-  const o = service.options[service.selectedIndex];
+  const selectedButton =
+    document.querySelector(".service-option.selected");
+
+  if (!selectedButton) {
+    alert("Selecciona un servicio.");
+    return;
+  }
 
   const reserva = {
-    servicio: o.textContent,
-    precio: Number(o.dataset.price),
+
+    servicio: service.value,
+
+    precio: Number(selectedButton.dataset.price),
+
     fecha: date.value,
+
     hora: time.options[time.selectedIndex].text,
-    nombre: document.getElementById("name").value,
-    telefono: document.getElementById("phone").value,
-    email: document.getElementById("email").value || null,
-    notas: document.getElementById("notes").value || null,
+
+    nombre:
+      document.getElementById("name").value,
+
+    telefono:
+      document.getElementById("phone").value,
+
+    email:
+      document.getElementById("email").value || null,
+
+    notas:
+      document.getElementById("notes").value || null,
+
     estado: "pendiente"
   };
 
-  const SUPABASE_URL = "https://srabrfcodvmgzezilpex.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWJyZmNvZHZtZ3plemlscGV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExNjczMzIsImV4cCI6MjEwNjc0MzMzMn0.1x5ASVNHJyqqmGai8pLbjoNlifUScUkxuNmhvZxRels";
+
+  const SUPABASE_URL =
+    "https://srabrfcodvmgzezilpex.supabase.co";
+
+  const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWJyZmNvZHZtZ3plemlscGV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExNjczMzIsImV4cCI6MjEwNjc0MzMzMn0.1x5ASVNHJyqqmGai8pLbjoNlifUScUkxuNmhvZxRels";
+
 
   try {
+
     const respuesta = await fetch(
       SUPABASE_URL + "/rest/v1/reservas",
       {
         method: "POST",
+
         headers: {
           "apikey": SUPABASE_ANON_KEY,
-          "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-          "Content-Type": "application/json",
-          "Prefer": "return=minimal"
+          "Authorization":
+            "Bearer " + SUPABASE_ANON_KEY,
+          "Content-Type":
+            "application/json",
+          "Prefer":
+            "return=minimal"
         },
+
         body: JSON.stringify(reserva)
       }
     );
+
 
     if (!respuesta.ok) {
       throw new Error(await respuesta.text());
     }
 
-    const prettyDate = new Date(
-      date.value + "T12:00:00"
-    ).toLocaleDateString("es-VE", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    });
+
+    const prettyDate =
+      new Date(
+        date.value + "T12:00:00"
+      ).toLocaleDateString(
+        "es-VE",
+        {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        }
+      );
+
 
     const msg = [
+
       "Hola, GabyStudio. Quiero solicitar una cita:",
+
       "",
-      "Servicio: " + service.value,
-"Precio publicado: $" + document.querySelector(".service-option.selected").dataset.price + " USD",
-      "Fecha deseada: " + prettyDate,
-      "Hora deseada: " + time.options[time.selectedIndex].text,
-      "Nombre: " + reserva.nombre,
-      "Teléfono: " + reserva.telefono,
-      "Correo: " + (reserva.email || "No indicado"),
-      "Notas: " + (reserva.notas || "Ninguna"),
+
+      "Servicio: " +
+        reserva.servicio,
+
+      "Precio publicado: $" +
+        reserva.precio +
+        " USD",
+
+      "Fecha deseada: " +
+        prettyDate,
+
+      "Hora deseada: " +
+        reserva.hora,
+
+      "Nombre: " +
+        reserva.nombre,
+
+      "Teléfono: " +
+        reserva.telefono,
+
+      "Correo: " +
+        (reserva.email || "No indicado"),
+
+      "Notas: " +
+        (reserva.notas || "Ninguna"),
+
       "",
+
       "Entiendo que la cita queda pendiente hasta que me confirmen disponibilidad."
+
     ].join("\n");
 
+
     window.open(
-      "https://wa.me/" + wa + "?text=" + encodeURIComponent(msg),
+      "https://wa.me/" +
+      wa +
+      "?text=" +
+      encodeURIComponent(msg),
       "_blank",
       "noopener"
     );
 
+
   } catch (error) {
+
     console.error(error);
-    alert("No se pudo guardar la solicitud. Inténtalo nuevamente.");
+
+    alert(
+      "No se pudo guardar la solicitud. Inténtalo nuevamente."
+    );
+
   }
+
 });
-</script>
 </body></html>
