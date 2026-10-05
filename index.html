@@ -427,6 +427,9 @@ const time = document.getElementById("time");
 const summary = document.getElementById("bookingSummary");
 const wa = "584242087674";
 
+/* IMPORTANTE:
+   Conserva aquí tu clave real de Supabase.
+*/
 const SUPABASE_URL = "https://srabrfcodvmgzezilpex.supabase.co";
 const SUPABASE_ANON_KEY = "TU_CLAVE_SUPABASE";
 
@@ -434,175 +437,654 @@ const today = new Date();
 today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
 date.min = today.toISOString().slice(0,10);
 
-for(let h=9; h<18; h++){
-  for(let m of [0,30]){
-    if(h===17 && m===30) continue;
 
-    const v = String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");
-    const opt = document.createElement("option");
-    opt.value = v;
+/* =========================
+   HORARIOS DISPONIBLES
+   9:00 AM hasta 5:00 PM
+   5:30 PM NO aparece
+========================= */
 
-    const hh = h % 12 || 12;
-    opt.textContent = hh+":"+String(m).padStart(2,"0")+" "+(h<12 ? "a. m." : "p. m.");
-    time.appendChild(opt);
+function createTimeOptions(){
+
+  time.innerHTML = '<option value="">Selecciona una hora</option>';
+
+  for(let h = 9; h <= 17; h++){
+
+    for(let m of [0,30]){
+
+      /* No ofrecer 5:30 PM */
+      if(h === 17 && m === 30) continue;
+
+      const v =
+        String(h).padStart(2,"0") +
+        ":" +
+        String(m).padStart(2,"0");
+
+      const opt = document.createElement("option");
+
+      opt.value = v;
+
+      const hh = h % 12 || 12;
+
+      opt.textContent =
+        hh +
+        ":" +
+        String(m).padStart(2,"0") +
+        " " +
+        (h < 12 ? "a. m." : "p. m.");
+
+      time.appendChild(opt);
+    }
   }
 }
 
+createTimeOptions();
+
+
+/* =========================
+   FECHA
+========================= */
+
 date.addEventListener("change", () => {
+
   if(!date.value) return;
 
-  const d = new Date(date.value+"T12:00:00");
+  const d = new Date(date.value + "T12:00:00");
 
-  if(d.getDay()===0){
-    date.setCustomValidity("GabyStudio no atiende los domingos. Elige otro día.");
+  if(d.getDay() === 0){
+
+    date.setCustomValidity(
+      "GabyStudio no atiende los domingos. Elige otro día."
+    );
+
     date.reportValidity();
-    date.value="";
+
+    date.value = "";
+
   }else{
+
     date.setCustomValidity("");
+
   }
+
 });
 
+
+/* =========================
+   CATEGORÍAS DE SERVICIOS
+========================= */
+
 document.querySelectorAll(".category-button").forEach(button => {
+
   button.addEventListener("click", () => {
+
     const category = button.parentElement;
     const services = category.querySelector(".category-services");
     const icon = button.querySelector("span");
+
     const isOpen = services.classList.contains("open");
 
-    document.querySelectorAll(".category-services").forEach(item => item.classList.remove("open"));
-    document.querySelectorAll(".category-button span").forEach(item => item.textContent="＋");
+    document
+      .querySelectorAll(".category-services")
+      .forEach(item => item.classList.remove("open"));
+
+    document
+      .querySelectorAll(".category-button span")
+      .forEach(item => item.textContent = "＋");
 
     if(!isOpen){
+
       services.classList.add("open");
-      icon.textContent="−";
+      icon.textContent = "−";
+
     }
+
   });
+
 });
 
-document.querySelectorAll(".service-option").forEach(button => {
-  button.addEventListener("click", () => {
-    const selectedService = document.getElementById("selectedService");
-    const hiddenService = document.getElementById("service");
 
-    const serviceName = button.querySelector("span").textContent.trim();
-    const price = button.dataset.price;
-    const duration = button.dataset.duration;
+/* =========================
+   SELECCIÓN DEL SERVICIO
+========================= */
+
+document.querySelectorAll(".service-option").forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    const selectedService =
+      document.getElementById("selectedService");
+
+    const hiddenService =
+      document.getElementById("service");
+
+    const serviceName =
+      button.querySelector("span").textContent.trim();
+
+    const price =
+      button.dataset.price;
+
+    const duration =
+      button.dataset.duration;
 
     hiddenService.value = serviceName;
 
-    selectedService.textContent = "✓ "+serviceName+" — $"+price+" · "+duration;
+    selectedService.textContent =
+      "✓ " +
+      serviceName +
+      " — $" +
+      price +
+      " · " +
+      duration;
 
-    document.querySelectorAll(".service-option").forEach(item => item.classList.remove("selected"));
+    document
+      .querySelectorAll(".service-option")
+      .forEach(item => item.classList.remove("selected"));
+
     button.classList.add("selected");
 
     update();
 
-    document.querySelectorAll(".category-services").forEach(item => item.classList.remove("open"));
-    document.querySelectorAll(".category-button span").forEach(item => item.textContent="＋");
+    /*
+      Cerramos la categoría después
+      de seleccionar el servicio.
+    */
+    document
+      .querySelectorAll(".category-services")
+      .forEach(item => item.classList.remove("open"));
+
+    document
+      .querySelectorAll(".category-button span")
+      .forEach(item => item.textContent = "＋");
+
   });
+
 });
 
+
+/* =========================
+   RESUMEN
+========================= */
+
 function update(){
-  const selectedButton = document.querySelector(".service-option.selected");
+
+  const selectedButton =
+    document.querySelector(".service-option.selected");
 
   if(selectedButton && service.value){
+
     summary.textContent =
-      "Servicio: "+service.value+
-      " · Precio: $"+selectedButton.dataset.price+
-      " USD · Duración estimada: "+selectedButton.dataset.duration;
+      "Servicio: " +
+      service.value +
+      " · Precio: $" +
+      selectedButton.dataset.price +
+      " USD · Duración estimada: " +
+      selectedButton.dataset.duration;
+
   }else{
-    summary.textContent = "Selecciona un servicio para ver el resumen de tu solicitud.";
+
+    summary.textContent =
+      "Selecciona un servicio para ver el resumen de tu solicitud.";
+
   }
+
 }
 
+
+/* =========================
+   ENVÍO DE RESERVA
+========================= */
+
 form.addEventListener("submit", async e => {
+
   e.preventDefault();
 
   if(!service.value){
+
     alert("Selecciona un servicio.");
+
     return;
   }
 
   if(!form.reportValidity()) return;
 
-  const selectedButton = document.querySelector(".service-option.selected");
+  const selectedButton =
+    document.querySelector(".service-option.selected");
 
   if(!selectedButton){
+
     alert("Selecciona un servicio.");
+
     return;
   }
 
+
+  /*
+    Evitar enviar una reserva
+    sin fecha u hora.
+  */
+
+  if(!date.value){
+
+    alert("Selecciona una fecha.");
+
+    return;
+  }
+
+  if(!time.value){
+
+    alert("Selecciona una hora.");
+
+    return;
+  }
+
+
   const reserva = {
+
     servicio: service.value,
-    precio: Number(selectedButton.dataset.price),
+
+    precio: Number(
+      selectedButton.dataset.price
+    ),
+
     fecha: date.value,
+
     hora: time.value,
-    nombre: document.getElementById("name").value,
-    telefono: document.getElementById("phone").value,
-    email: document.getElementById("email").value || null,
-    notas: document.getElementById("notes").value || null,
+
+    nombre:
+      document.getElementById("name").value,
+
+    telefono:
+      document.getElementById("phone").value,
+
+    email:
+      document.getElementById("email").value || null,
+
+    notas:
+      document.getElementById("notes").value || null,
+
     estado: "pendiente"
+
   };
 
-  try{
-    const respuesta = await fetch(
-      SUPABASE_URL+"/rest/v1/reservas",
-      {
-        method:"POST",
-        headers:{
-          "apikey":SUPABASE_ANON_KEY,
-          "Authorization":"Bearer "+SUPABASE_ANON_KEY,
-          "Content-Type":"application/json",
-          "Prefer":"return=minimal"
-        },
-        body:JSON.stringify(reserva)
-      }
-    );
 
-    if(!respuesta.ok){
-      const errorText = await respuesta.text();
-      console.error("Supabase:", errorText);
-      throw new Error("No se pudo guardar la reserva.");
+  try{
+
+    /*
+      Primero comprobamos si esa hora
+      ya está ocupada.
+    */
+
+    const consultaURL =
+      SUPABASE_URL +
+      "/rest/v1/reservas" +
+      "?select=fecha,hora,servicio,estado" +
+      "&fecha=eq." +
+      encodeURIComponent(reserva.fecha) +
+      "&hora=eq." +
+      encodeURIComponent(reserva.hora);
+
+
+    const consulta =
+      await fetch(
+        consultaURL,
+        {
+          method: "GET",
+
+          headers: {
+            "apikey": SUPABASE_ANON_KEY,
+            "Authorization":
+              "Bearer " + SUPABASE_ANON_KEY
+          }
+        }
+      );
+
+
+    if(!consulta.ok){
+
+      throw new Error(
+        "No se pudo consultar disponibilidad."
+      );
+
     }
 
+
+    const reservasExistentes =
+      await consulta.json();
+
+
+    /*
+      Ignoramos reservas canceladas.
+    */
+
+    const ocupada =
+      reservasExistentes.some(reservaExistente => {
+
+        const estado =
+          String(
+            reservaExistente.estado || ""
+          ).toLowerCase();
+
+        return (
+          estado !== "cancelada" &&
+          estado !== "cancelado"
+        );
+
+      });
+
+
+    /*
+      Si ya está ocupada,
+      no permitimos enviar otra.
+    */
+
+    if(ocupada){
+
+      alert(
+        "Ese horario ya fue reservado. " +
+        "Por favor selecciona otra hora."
+      );
+
+      await cargarDisponibilidad();
+
+      return;
+    }
+
+
+    /* =========================
+       GUARDAR RESERVA
+    ========================= */
+
+    const respuesta =
+      await fetch(
+        SUPABASE_URL + "/rest/v1/reservas",
+        {
+          method: "POST",
+
+          headers: {
+
+            "apikey":
+              SUPABASE_ANON_KEY,
+
+            "Authorization":
+              "Bearer " +
+              SUPABASE_ANON_KEY,
+
+            "Content-Type":
+              "application/json",
+
+            "Prefer":
+              "return=minimal"
+
+          },
+
+          body:
+            JSON.stringify(reserva)
+
+        }
+      );
+
+
+    if(!respuesta.ok){
+
+      const errorText =
+        await respuesta.text();
+
+      console.error(
+        "Supabase:",
+        errorText
+      );
+
+      throw new Error(
+        "No se pudo guardar la reserva."
+      );
+
+    }
+
+
+    /* =========================
+       WHATSAPP
+    ========================= */
+
     const mensaje =
-      "Hola GabyStudio 💕"+
-      "\n\n"+
-      "Quiero solicitar una reserva."+
-      "\n\n"+
-      "Servicio: "+service.value+
-      "\n"+
-      "Precio publicado: $"+selectedButton.dataset.price+" USD"+
-      "\n"+
-      "Fecha: "+date.value+
-      "\n"+
-      "Hora: "+time.options[time.selectedIndex].text+
-      "\n"+
-      "Nombre: "+reserva.nombre+
-      "\n"+
-      "Teléfono: "+reserva.telefono+
-      (reserva.email ? "\nEmail: "+reserva.email : "")+
-      (reserva.notas ? "\nNotas: "+reserva.notas : "")+
-      "\n\nQuedo pendiente de la confirmación. 💕";
+
+      "Hola GabyStudio 💕" +
+
+      "\n\n" +
+
+      "Quiero solicitar una reserva." +
+
+      "\n\n" +
+
+      "Servicio: " +
+      service.value +
+
+      "\n" +
+
+      "Precio publicado: $" +
+      selectedButton.dataset.price +
+      " USD" +
+
+      "\n" +
+
+      "Fecha: " +
+      date.value +
+
+      "\n" +
+
+      "Hora: " +
+      time.options[time.selectedIndex].text +
+
+      "\n" +
+
+      "Nombre: " +
+      reserva.nombre +
+
+      "\n" +
+
+      "Teléfono: " +
+      reserva.telefono +
+
+      (
+        reserva.email
+          ? "\nEmail: " + reserva.email
+          : ""
+      ) +
+
+      (
+        reserva.notas
+          ? "\nNotas: " + reserva.notas
+          : ""
+      ) +
+
+      "\n\n" +
+
+      "Quedo pendiente de la confirmación. 💕";
+
 
     const whatsappURL =
-      "https://wa.me/"+wa+"?text="+encodeURIComponent(mensaje);
+      "https://wa.me/" +
+      wa +
+      "?text=" +
+      encodeURIComponent(mensaje);
 
-    alert("¡Solicitud enviada correctamente! 💕");
-    window.open(whatsappURL,"_blank");
+
+    alert(
+      "¡Solicitud enviada correctamente! 💕"
+    );
+
+
+    window.open(
+      whatsappURL,
+      "_blank"
+    );
+
+
+    /* =========================
+       LIMPIAR FORMULARIO
+    ========================= */
 
     form.reset();
-    service.value="";
-    document.getElementById("selectedService").textContent="Selecciona un servicio";
 
-    document.querySelectorAll(".service-option").forEach(item => item.classList.remove("selected"));
+    service.value = "";
+
+    document
+      .getElementById("selectedService")
+      .textContent =
+        "Selecciona un servicio";
+
+    document
+      .querySelectorAll(".service-option")
+      .forEach(item =>
+        item.classList.remove("selected")
+      );
+
+    createTimeOptions();
+
     update();
 
+
   }catch(error){
+
     console.error(error);
-    alert("No se pudo guardar la reserva. Revisa la conexión con Supabase.");
+
+    alert(
+      "No se pudo guardar la reserva. " +
+      "Revisa la conexión con Supabase."
+    );
+
   }
+
 });
+
+
+/* =========================
+   CARGAR HORARIOS OCUPADOS
+========================= */
+
+async function cargarDisponibilidad(){
+
+  if(!date.value){
+
+    createTimeOptions();
+
+    return;
+  }
+
+
+  try{
+
+    const url =
+      SUPABASE_URL +
+      "/rest/v1/reservas" +
+      "?select=fecha,hora,servicio,estado" +
+      "&fecha=eq." +
+      encodeURIComponent(date.value);
+
+
+    const respuesta =
+      await fetch(
+        url,
+        {
+          method: "GET",
+
+          headers: {
+
+            "apikey":
+              SUPABASE_ANON_KEY,
+
+            "Authorization":
+              "Bearer " +
+              SUPABASE_ANON_KEY
+
+          }
+
+        }
+      );
+
+
+    if(!respuesta.ok){
+
+      throw new Error(
+        "No se pudo cargar disponibilidad."
+      );
+
+    }
+
+
+    const reservas =
+      await respuesta.json();
+
+
+    createTimeOptions();
+
+
+    reservas.forEach(reserva => {
+
+      const estado =
+        String(
+          reserva.estado || ""
+        ).toLowerCase();
+
+
+      if(
+        estado === "cancelada" ||
+        estado === "cancelado"
+      ){
+
+        return;
+
+      }
+
+
+      const option =
+        Array.from(
+          time.options
+        ).find(
+          item =>
+            item.value === reserva.hora
+        );
+
+
+      if(option){
+
+        option.disabled = true;
+
+        option.textContent +=
+          " — NO DISPONIBLE";
+
+      }
+
+    });
+
+
+  }catch(error){
+
+    console.error(error);
+
+    createTimeOptions();
+
+  }
+
+}
+
+
+/* =========================
+   CUANDO CAMBIA LA FECHA
+========================= */
+
+date.addEventListener(
+  "change",
+  cargarDisponibilidad
+);
+
+
+/* =========================
+   INICIALIZAR
+========================= */
+
+createTimeOptions();
+
 </script>
 
 </body>
