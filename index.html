@@ -41,13 +41,12 @@
 <footer class="footer"><div class="wrap">© GabyStudio · La belleza es un arte · Reservas con cita previa</div></footer><a class="floating" href="https://wa.me/584242087674" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">WhatsApp</a>
 <script>
 alert("GabyStudio funciona");
-</script>
  const form=document.getElementById("reservationForm");
  alert("EL SCRIPT ESTÁ FUNCIONANDO");
  const service=document.getElementById("service"), date=document.getElementById("date"), time=document.getElementById("time"), summary=document.getElementById("bookingSummary");
  const wa="584242087674";
  const today=new Date(); today.setMinutes(today.getMinutes()-today.getTimezoneOffset()); date.min=today.toISOString().slice(0,10);
- console.log("GENERANDO HORAS", time);for(let h=9;h<18;h++){
+ console.log("GENERANDO HORAS", time);for(let h=9;h<18;h++) for(let h=9;h<18;h++){
   for(let m of [0,30]){
     if(h===17&&m===30) continue;
 
