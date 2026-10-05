@@ -258,9 +258,21 @@ textarea{
   }
 
   .logo{
-    width:125px;
-    height:125px;
-  }
+  width:145px;
+  height:145px;
+  margin:auto;
+  border-radius:50%;
+  overflow:hidden;
+  background:#fff;
+  box-shadow:0 6px 20px rgba(100,60,60,.12);
+}
+
+.logo img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
 
   .logo-text{
     font-size:26px;
@@ -282,11 +294,8 @@ textarea{
 <header class="hero">
 
   <div class="logo">
-    <div class="logo-text">
-      Gaby
-      <small>STUDIO</small>
-    </div>
-  </div>
+  <img src="logo.png" alt="GabyStudio">
+</div>
 
   <h1>GabyStudio</h1>
   <p class="tagline">La belleza es un arte</p>
