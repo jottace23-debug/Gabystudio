@@ -45,7 +45,7 @@
  const service=document.getElementById("service"), date=document.getElementById("date"), time=document.getElementById("time"), summary=document.getElementById("bookingSummary");
  const wa="584242087674";
  const today=new Date(); today.setMinutes(today.getMinutes()-today.getTimezoneOffset()); date.min=today.toISOString().slice(0,10);
- for(let h=9;h<18;h++){ for(let m of [0,30]){ if(h===17&&m===30) continue; const v=String(h).padStart(2,"0")+":"+String(m).padStart(2,"0"); const opt=document.createElement("option"); opt.value=v; const hh=h%12||12; opt.textContent=hh+":"+String(m).padStart(2,"0")+" "+(h<12?"a. m.":"p. m."); time.appendChild(opt); }}
+ console.log(“GENERANDO HORAS”,time);for(let h=9;h<18;h++){ for(let m of [0,30]){ if(h===17&&m===30) continue; const v=String(h).padStart(2,"0")+":"+String(m).padStart(2,"0"); const opt=document.createElement("option"); opt.value=v; const hh=h%12||12; opt.textContent=hh+":"+String(m).padStart(2,"0")+" "+(h<12?"a. m.":"p. m."); time.appendChild(opt); }}
  date.addEventListener("change",()=>{ if(!date.value)return; const d=new Date(date.value+"T12:00:00"); if(d.getDay()===0){date.setCustomValidity("GabyStudio no atiende los domingos. Elige otro día.");date.reportValidity();date.value="";}else date.setCustomValidity(""); });
  function update(){ const o=service.options[service.selectedIndex]; summary.textContent=o&&o.dataset.price?"Servicio: "+o.textContent+" · Precio: $"+o.dataset.price+" USD · Duración estimada: "+o.dataset.duration:"Selecciona un servicio para ver el resumen de tu solicitud."; } service.addEventListener("change",update);
  form.addEventListener("submit", async e => {
