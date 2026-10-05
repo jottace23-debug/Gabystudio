@@ -42,6 +42,7 @@
 <script>
 (function(){
  const form=document.getElementById("reservationForm");
+ alert("EL SCRIPT ESTÁ FUNCIONANDO");
  const service=document.getElementById("service"), date=document.getElementById("date"), time=document.getElementById("time"), summary=document.getElementById("bookingSummary");
  const wa="584242087674";
  const today=new Date(); today.setMinutes(today.getMinutes()-today.getTimezoneOffset()); date.min=today.toISOString().slice(0,10);
