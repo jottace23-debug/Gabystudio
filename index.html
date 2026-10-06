@@ -429,7 +429,7 @@ const summary = document.getElementById("bookingSummary");
 const wa = "584242087674";
 
 const SUPABASE_URL = "https://srabrfcodvmgzezilpex.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWJyZmNvZHZtZ3plemlscGV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExNjczMzIsImV4cCI6MjEwNjc0MzMzMn0.1x5ASVNHJyqqmGai8pLbjoNlifUScUkxuNmhvZxRels";
+const SUPABASE_ANON_KEY = "TU_CLAVE_SUPABASE";
 
 
 /* =========================
@@ -437,20 +437,26 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 ========================= */
 
 const today = new Date();
-today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+today.setMinutes(
+  today.getMinutes() - today.getTimezoneOffset()
+);
+
 date.min = today.toISOString().slice(0,10);
 
 
 /* =========================
-   DURACIÓN DE LOS SERVICIOS
+   DURACIÓN DE SERVICIOS
 ========================= */
 
 const serviceDurations = {};
 
 document.querySelectorAll(".service-option").forEach(button => {
 
-  const name = button.querySelector("span").textContent.trim();
-  const durationText = button.dataset.duration;
+  const name =
+    button.querySelector("span").textContent.trim();
+
+  const durationText =
+    button.dataset.duration || "";
 
   let minutes = 30;
 
@@ -473,6 +479,7 @@ document.querySelectorAll(".service-option").forEach(button => {
   }
 
   serviceDurations[name] = minutes;
+
 });
 
 
@@ -482,203 +489,46 @@ document.querySelectorAll(".service-option").forEach(button => {
 
 function createTimeOptions(){
 
-  time.innerHTML = '<option value="">Selecciona una hora</option>';
+  time.innerHTML =
+    '<option value="">Selecciona una hora</option>';
 
   for(let h = 9; h <= 17; h++){
 
     for(let m of [0,30]){
 
-      // No mostrar 5:30 PM
-      if(h === 17 && m === 30) continue;
+      // 5:30 PM no se ofrece
+      if(h === 17 && m === 30){
+        continue;
+      }
 
-      const v =
+      const value =
         String(h).padStart(2,"0") +
         ":" +
         String(m).padStart(2,"0");
 
-      const opt = document.createElement("option");
+      const option =
+        document.createElement("option");
 
-      opt.value = v;
+      option.value = value;
 
       const hh = h % 12 || 12;
 
-      opt.textContent =
+      option.textContent =
         hh +
         ":" +
         String(m).padStart(2,"0") +
         " " +
         (h < 12 ? "a. m." : "p. m.");
 
-      time.appendChild(opt);
+      time.appendChild(option);
+
     }
+
   }
+
 }
 
 createTimeOptions();
-
-
-/* =========================
-   DOMINGOS
-========================= */
-
-date.addEventListener("change", async () => {
-
-  if(!date.value) return;
-
-  const d = new Date(date.value + "T12:00:00");
-
-  if(d.getDay() === 0){
-
-    date.setCustomValidity(
-      "GabyStudio no atiende los domingos. Elige otro día."
-    );
-
-    date.reportValidity();
-
-    date.value = "";
-
-    createTimeOptions();
-
-  }else{
-
-    date.setCustomValidity("");
-
-    await cargarDisponibilidad();
-  }
-});
-
-
-/* =========================
-   CATEGORÍAS
-========================= */
-
-document.querySelectorAll(".category-button").forEach(button => {
-
-  button.addEventListener("click", () => {
-
-    const category = button.parentElement;
-    const services = category.querySelector(".category-services");
-    const icon = button.querySelector("span");
-
-    const isOpen =
-      services.classList.contains("open");
-
-    document
-      .querySelectorAll(".category-services")
-      .forEach(item =>
-        item.classList.remove("open")
-      );
-
-    document
-      .querySelectorAll(".category-button span")
-      .forEach(item =>
-        item.textContent = "＋"
-      );
-
-    if(!isOpen){
-
-      services.classList.add("open");
-
-      icon.textContent = "−";
-    }
-
-  });
-
-});
-
-
-/* =========================
-   SELECCIONAR SERVICIO
-========================= */
-
-document.querySelectorAll(".service-option").forEach(button => {
-
-  button.addEventListener("click", async () => {
-
-    const selectedService =
-      document.getElementById("selectedService");
-
-    const hiddenService =
-      document.getElementById("service");
-
-    const serviceName =
-      button.querySelector("span").textContent.trim();
-
-    const price =
-      button.dataset.price;
-
-    const duration =
-      button.dataset.duration;
-
-    hiddenService.value = serviceName;
-
-    selectedService.textContent =
-      "✓ " +
-      serviceName +
-      " — $" +
-      price +
-      " · " +
-      duration;
-
-    document
-      .querySelectorAll(".service-option")
-      .forEach(item =>
-        item.classList.remove("selected")
-      );
-
-    button.classList.add("selected");
-
-    update();
-
-    document
-      .querySelectorAll(".category-services")
-      .forEach(item =>
-        item.classList.remove("open")
-      );
-
-    document
-      .querySelectorAll(".category-button span")
-      .forEach(item =>
-        item.textContent = "＋"
-      );
-
-    // Volver a calcular horarios según duración
-    if(date.value){
-      await cargarDisponibilidad();
-    }
-
-  });
-
-});
-
-
-/* =========================
-   RESUMEN
-========================= */
-
-function update(){
-
-  const selectedButton =
-    document.querySelector(".service-option.selected");
-
-  if(selectedButton && service.value){
-
-    summary.textContent =
-      "Servicio: " +
-      service.value +
-      " · Precio: $" +
-      selectedButton.dataset.price +
-      " USD · Duración estimada: " +
-      selectedButton.dataset.duration;
-
-  }else{
-
-    summary.textContent =
-      "Selecciona un servicio para ver el resumen de tu solicitud.";
-
-  }
-
-}
 
 
 /* =========================
@@ -693,11 +543,12 @@ function horaAMinutos(hora){
     Number(partes[0]) * 60 +
     Number(partes[1])
   );
+
 }
 
 
 /* =========================
-   COMPROBAR CRUCE DE HORARIOS
+   COMPROBAR CRUCE
 ========================= */
 
 function horariosSeCruzan(
@@ -723,6 +574,281 @@ function horariosSeCruzan(
     inicio1 < fin2 &&
     fin1 > inicio2
   );
+
+}
+
+
+/* =========================
+   OBTENER DURACIÓN
+========================= */
+
+function obtenerDuracion(nombreServicio){
+
+  return serviceDurations[nombreServicio] || 30;
+
+}
+
+
+/* =========================
+   OBTENER CUPO
+========================= */
+
+function obtenerCupo(reserva){
+
+  const cupo =
+    Number(reserva.cupo);
+
+  // Reservas antiguas que todavía
+  // no tenían cupo quedan como Cupo 1
+  if(cupo >= 1 && cupo <= 3){
+    return cupo;
+  }
+
+  return 1;
+
+}
+
+
+/* =========================
+   VERIFICAR SI UN CUPO
+   ESTÁ OCUPADO
+========================= */
+
+function cupoEstaOcupado(
+  reservas,
+  horaNueva,
+  duracionNueva,
+  numeroCupo
+){
+
+  return reservas.some(reserva => {
+
+    const estado =
+      String(
+        reserva.estado || ""
+      ).toLowerCase();
+
+    if(
+      estado === "cancelada" ||
+      estado === "cancelado"
+    ){
+      return false;
+    }
+
+    const cupoExistente =
+      obtenerCupo(reserva);
+
+    if(cupoExistente !== numeroCupo){
+      return false;
+    }
+
+    const duracionExistente =
+      obtenerDuracion(
+        reserva.servicio
+      );
+
+    return horariosSeCruzan(
+      horaNueva,
+      duracionNueva,
+      reserva.hora,
+      duracionExistente
+    );
+
+  });
+
+}
+
+
+/* =========================
+   BUSCAR PRIMER CUPO LIBRE
+========================= */
+
+function buscarCupoLibre(
+  reservas,
+  horaNueva,
+  duracionNueva
+){
+
+  for(let cupo = 1; cupo <= 3; cupo++){
+
+    const ocupado =
+      cupoEstaOcupado(
+        reservas,
+        horaNueva,
+        duracionNueva,
+        cupo
+      );
+
+    if(!ocupado){
+      return cupo;
+    }
+
+  }
+
+  return null;
+
+}
+
+
+/* =========================
+   CATEGORÍAS
+========================= */
+
+document
+.querySelectorAll(".category-button")
+.forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    const category =
+      button.parentElement;
+
+    const services =
+      category.querySelector(
+        ".category-services"
+      );
+
+    const icon =
+      button.querySelector("span");
+
+    const isOpen =
+      services.classList.contains("open");
+
+    document
+      .querySelectorAll(".category-services")
+      .forEach(item =>
+        item.classList.remove("open")
+      );
+
+    document
+      .querySelectorAll(".category-button span")
+      .forEach(item =>
+        item.textContent = "＋"
+      );
+
+    if(!isOpen){
+
+      services.classList.add("open");
+
+      icon.textContent = "−";
+
+    }
+
+  });
+
+});
+
+
+/* =========================
+   SELECCIONAR SERVICIO
+========================= */
+
+document
+.querySelectorAll(".service-option")
+.forEach(button => {
+
+  button.addEventListener(
+    "click",
+    async () => {
+
+      const selectedService =
+        document.getElementById(
+          "selectedService"
+        );
+
+      const hiddenService =
+        document.getElementById(
+          "service"
+        );
+
+      const serviceName =
+        button
+          .querySelector("span")
+          .textContent
+          .trim();
+
+      const price =
+        button.dataset.price;
+
+      const duration =
+        button.dataset.duration;
+
+      hiddenService.value =
+        serviceName;
+
+      selectedService.textContent =
+        "✓ " +
+        serviceName +
+        " — $" +
+        price +
+        " · " +
+        duration;
+
+      document
+        .querySelectorAll(".service-option")
+        .forEach(item =>
+          item.classList.remove("selected")
+        );
+
+      button.classList.add("selected");
+
+      update();
+
+      document
+        .querySelectorAll(".category-services")
+        .forEach(item =>
+          item.classList.remove("open")
+        );
+
+      document
+        .querySelectorAll(".category-button span")
+        .forEach(item =>
+          item.textContent = "＋"
+        );
+
+      if(date.value){
+
+        await cargarDisponibilidad();
+
+      }
+
+    }
+  );
+
+});
+
+
+/* =========================
+   RESUMEN
+========================= */
+
+function update(){
+
+  const selectedButton =
+    document.querySelector(
+      ".service-option.selected"
+    );
+
+  if(
+    selectedButton &&
+    service.value
+  ){
+
+    summary.textContent =
+      "Servicio: " +
+      service.value +
+      " · Precio: $" +
+      selectedButton.dataset.price +
+      " USD · Duración estimada: " +
+      selectedButton.dataset.duration;
+
+  }else{
+
+    summary.textContent =
+      "Selecciona un servicio para ver el resumen de tu solicitud.";
+
+  }
+
 }
 
 
@@ -737,6 +863,7 @@ async function cargarDisponibilidad(){
     createTimeOptions();
 
     return;
+
   }
 
   try{
@@ -744,7 +871,7 @@ async function cargarDisponibilidad(){
     const url =
       SUPABASE_URL +
       "/rest/v1/reservas" +
-      "?select=fecha,hora,servicio,estado" +
+      "?select=fecha,hora,servicio,estado,cupo" +
       "&fecha=eq." +
       encodeURIComponent(date.value);
 
@@ -753,8 +880,11 @@ async function cargarDisponibilidad(){
         url,
         {
           method: "GET",
+
           headers: {
-            "apikey": SUPABASE_ANON_KEY,
+            "apikey":
+              SUPABASE_ANON_KEY,
+
             "Authorization":
               "Bearer " +
               SUPABASE_ANON_KEY
@@ -776,414 +906,497 @@ async function cargarDisponibilidad(){
     createTimeOptions();
 
 
-    /* Duración del servicio que quiere reservar */
+    /* Duración del servicio seleccionado */
 
     const duracionNueva =
-      service.value &&
-      serviceDurations[service.value]
-        ? serviceDurations[service.value]
-        : 30;
+      obtenerDuracion(
+        service.value
+      );
 
 
     /* Revisar cada horario */
 
-    Array.from(time.options).forEach(option => {
+    Array.from(time.options)
+      .forEach(option => {
 
-      if(!option.value) return;
+        if(!option.value){
+          return;
+        }
 
-      const horaNueva =
-        option.value;
-
-      const inicioNueva =
-        horaAMinutos(horaNueva);
-
-      const finNueva =
-        inicioNueva + duracionNueva;
+        const horaNueva =
+          option.value;
 
 
-      // No permitir citas que terminen después de las 6 PM
-
-      if(finNueva > 18 * 60){
-
-        option.disabled = true;
-
-        option.textContent +=
-          " — FUERA DE HORARIO";
-
-        return;
-      }
-
-
-      /* Revisar reservas existentes */
-
-      const hayCruce =
-        reservas.some(reserva => {
-
-          const estado =
-            String(
-              reserva.estado || ""
-            ).toLowerCase();
-
-          if(
-            estado === "cancelada" ||
-            estado === "cancelado"
-          ){
-            return false;
-          }
-
-          const duracionExistente =
-            serviceDurations[
-              reserva.servicio
-            ] || 30;
-
-          return horariosSeCruzan(
-            horaNueva,
-            duracionNueva,
-            reserva.hora,
-            duracionExistente
+        const inicioNueva =
+          horaAMinutos(
+            horaNueva
           );
 
-        });
+        const finNueva =
+          inicioNueva +
+          duracionNueva;
 
 
-      if(hayCruce){
+        /* No permitir que termine después de las 6 PM */
 
-        option.disabled = true;
+        if(finNueva > 18 * 60){
 
-        option.textContent +=
-          " — NO DISPONIBLE";
-      }
+          option.disabled = true;
 
-    });
+          option.textContent +=
+            " — FUERA DE HORARIO";
+
+          return;
+
+        }
+
+
+        /* Contar cuántos cupos están ocupados */
+
+        let cuposOcupados = 0;
+
+
+        for(
+          let cupo = 1;
+          cupo <= 3;
+          cupo++
+        ){
+
+          if(
+            cupoEstaOcupado(
+              reservas,
+              horaNueva,
+              duracionNueva,
+              cupo
+            )
+          ){
+
+            cuposOcupados++;
+
+          }
+
+        }
+
+
+        /* Si los 3 están ocupados */
+
+        if(cuposOcupados >= 3){
+
+          option.disabled = true;
+
+          option.textContent +=
+            " — NO DISPONIBLE";
+
+        }
+
+      });
+
 
   }catch(error){
 
     console.error(error);
 
     createTimeOptions();
+
   }
 
 }
 
 
 /* =========================
+   FECHA
+========================= */
+
+date.addEventListener(
+  "change",
+  async () => {
+
+    if(!date.value){
+      return;
+    }
+
+    const d =
+      new Date(
+        date.value +
+        "T12:00:00"
+      );
+
+    if(d.getDay() === 0){
+
+      date.setCustomValidity(
+        "GabyStudio no atiende los domingos. Elige otro día."
+      );
+
+      date.reportValidity();
+
+      date.value = "";
+
+      createTimeOptions();
+
+      return;
+
+    }
+
+    date.setCustomValidity("");
+
+    await cargarDisponibilidad();
+
+  }
+);
+
+
+/* =========================
    ENVIAR RESERVA
 ========================= */
 
-form.addEventListener("submit", async e => {
+form.addEventListener(
+  "submit",
+  async e => {
 
-  e.preventDefault();
-
-
-  if(!service.value){
-
-    alert("Selecciona un servicio.");
-
-    return;
-  }
+    e.preventDefault();
 
 
-  if(!form.reportValidity()) return;
+    if(!service.value){
 
-
-  const selectedButton =
-    document.querySelector(
-      ".service-option.selected"
-    );
-
-
-  if(!selectedButton){
-
-    alert("Selecciona un servicio.");
-
-    return;
-  }
-
-
-  if(!date.value){
-
-    alert("Selecciona una fecha.");
-
-    return;
-  }
-
-
-  if(!time.value){
-
-    alert("Selecciona una hora.");
-
-    return;
-  }
-
-
-  const duracionNueva =
-    serviceDurations[service.value] || 30;
-
-
-  const reserva = {
-
-    servicio: service.value,
-
-    precio:
-      Number(selectedButton.dataset.price),
-
-    fecha: date.value,
-
-    hora: time.value,
-
-    nombre:
-      document.getElementById("name").value,
-
-    telefono:
-      document.getElementById("phone").value,
-
-    email:
-      document.getElementById("email").value || null,
-
-    notas:
-      document.getElementById("notes").value || null,
-
-    estado: "pendiente"
-  };
-
-
-  try{
-
-    /* =========================
-       COMPROBAR NUEVAMENTE
-       ANTES DE GUARDAR
-    ========================= */
-
-    const consultaURL =
-      SUPABASE_URL +
-      "/rest/v1/reservas" +
-      "?select=fecha,hora,servicio,estado" +
-      "&fecha=eq." +
-      encodeURIComponent(reserva.fecha);
-
-
-    const consulta =
-      await fetch(
-        consultaURL,
-        {
-          method: "GET",
-          headers: {
-            "apikey": SUPABASE_ANON_KEY,
-            "Authorization":
-              "Bearer " +
-              SUPABASE_ANON_KEY
-          }
-        }
+      alert(
+        "Selecciona un servicio."
       );
 
-
-    if(!consulta.ok){
-
-      throw new Error(
-        "No se pudo consultar disponibilidad."
-      );
+      return;
 
     }
 
 
-    const reservasExistentes =
-      await consulta.json();
-
-
-    const hayCruce =
-      reservasExistentes.some(
-        reservaExistente => {
-
-          const estado =
-            String(
-              reservaExistente.estado || ""
-            ).toLowerCase();
-
-
-          if(
-            estado === "cancelada" ||
-            estado === "cancelado"
-          ){
-
-            return false;
-          }
-
-
-          const duracionExistente =
-            serviceDurations[
-              reservaExistente.servicio
-            ] || 30;
-
-
-          return horariosSeCruzan(
-
-            reserva.hora,
-
-            duracionNueva,
-
-            reservaExistente.hora,
-
-            duracionExistente
-
-          );
-
-        }
-      );
-
-
-    if(hayCruce){
-
-      alert(
-        "Ese horario se cruza con una reserva existente. Por favor selecciona otra hora."
-      );
-
-      await cargarDisponibilidad();
-
+    if(!form.reportValidity()){
       return;
     }
 
 
-    /* =========================
-       GUARDAR EN SUPABASE
-    ========================= */
-
-    const respuesta =
-      await fetch(
-        SUPABASE_URL +
-        "/rest/v1/reservas",
-        {
-          method: "POST",
-
-          headers: {
-            "apikey": SUPABASE_ANON_KEY,
-
-            "Authorization":
-              "Bearer " +
-              SUPABASE_ANON_KEY,
-
-            "Content-Type":
-              "application/json",
-
-            "Prefer":
-              "return=minimal"
-          },
-
-          body:
-            JSON.stringify(reserva)
-        }
+    const selectedButton =
+      document.querySelector(
+        ".service-option.selected"
       );
 
 
-    if(!respuesta.ok){
+    if(!selectedButton){
 
-      const errorText =
-        await respuesta.text();
-
-      console.error(
-        "Supabase:",
-        errorText
+      alert(
+        "Selecciona un servicio."
       );
 
-      throw new Error(
-        "No se pudo guardar la reserva."
-      );
+      return;
+
     }
 
 
-    /* =========================
-       WHATSAPP
-    ========================= */
+    if(!date.value){
 
-    const mensaje =
-      "Hola GabyStudio 💕" +
-      "\n\n" +
-      "Quiero solicitar una reserva." +
-      "\n\n" +
-      "Servicio: " +
-      service.value +
-      "\n" +
-      "Precio publicado: $" +
-      selectedButton.dataset.price +
-      " USD" +
-      "\n" +
-      "Fecha: " +
-      date.value +
-      "\n" +
-      "Hora: " +
-      time.options[
-        time.selectedIndex
-      ].text +
-      "\n" +
-      "Nombre: " +
-      reserva.nombre +
-      "\n" +
-      "Teléfono: " +
-      reserva.telefono +
-      (
-        reserva.email
-        ? "\nEmail: " + reserva.email
-        : ""
-      ) +
-      (
-        reserva.notas
-        ? "\nNotas: " + reserva.notas
-        : ""
-      ) +
-      "\n\n" +
-      "Quedo pendiente de la confirmación. 💕";
-
-
-    const whatsappURL =
-      "https://wa.me/" +
-      wa +
-      "?text=" +
-      encodeURIComponent(mensaje);
-
-
-    alert(
-      "¡Solicitud enviada correctamente! 💕"
-    );
-
-
-    window.open(
-      whatsappURL,
-      "_blank"
-    );
-
-
-    /* Limpiar formulario */
-
-    form.reset();
-
-    service.value = "";
-
-    document.getElementById(
-      "selectedService"
-    ).textContent =
-      "Selecciona un servicio";
-
-    document
-      .querySelectorAll(".service-option")
-      .forEach(item =>
-        item.classList.remove("selected")
+      alert(
+        "Selecciona una fecha."
       );
 
-    createTimeOptions();
+      return;
 
-    update();
+    }
 
 
-  }catch(error){
+    if(!time.value){
 
-    console.error(error);
+      alert(
+        "Selecciona una hora."
+      );
 
-    alert(
-      "No se pudo guardar la reserva. Revisa la conexión con Supabase."
-    );
+      return;
+
+    }
+
+
+    const duracionNueva =
+      obtenerDuracion(
+        service.value
+      );
+
+
+    const reserva = {
+
+      servicio:
+        service.value,
+
+      precio:
+        Number(
+          selectedButton.dataset.price
+        ),
+
+      fecha:
+        date.value,
+
+      hora:
+        time.value,
+
+      nombre:
+        document.getElementById(
+          "name"
+        ).value,
+
+      telefono:
+        document.getElementById(
+          "phone"
+        ).value,
+
+      email:
+        document.getElementById(
+          "email"
+        ).value || null,
+
+      notas:
+        document.getElementById(
+          "notes"
+        ).value || null,
+
+      estado:
+        "pendiente"
+
+    };
+
+
+    try{
+
+      /* =========================
+         OBTENER RESERVAS DEL DÍA
+      ========================= */
+
+      const consultaURL =
+        SUPABASE_URL +
+        "/rest/v1/reservas" +
+        "?select=fecha,hora,servicio,estado,cupo" +
+        "&fecha=eq." +
+        encodeURIComponent(
+          reserva.fecha
+        );
+
+
+      const consulta =
+        await fetch(
+          consultaURL,
+          {
+            method: "GET",
+
+            headers: {
+              "apikey":
+                SUPABASE_ANON_KEY,
+
+              "Authorization":
+                "Bearer " +
+                SUPABASE_ANON_KEY
+            }
+          }
+        );
+
+
+      if(!consulta.ok){
+
+        throw new Error(
+          "No se pudo consultar disponibilidad."
+        );
+
+      }
+
+
+      const reservasExistentes =
+        await consulta.json();
+
+
+      /* =========================
+         BUSCAR CUPO LIBRE
+      ========================= */
+
+      const cupoDisponible =
+        buscarCupoLibre(
+          reservasExistentes,
+          reserva.hora,
+          duracionNueva
+        );
+
+
+      if(cupoDisponible === null){
+
+        alert(
+          "Ese horario ya tiene los 3 cupos ocupados. Por favor selecciona otra hora."
+        );
+
+        await cargarDisponibilidad();
+
+        return;
+
+      }
+
+
+      /* Guardar el cupo */
+
+      reserva.cupo =
+        cupoDisponible;
+
+
+      /* =========================
+         GUARDAR EN SUPABASE
+      ========================= */
+
+      const respuesta =
+        await fetch(
+          SUPABASE_URL +
+          "/rest/v1/reservas",
+          {
+            method: "POST",
+
+            headers: {
+
+              "apikey":
+                SUPABASE_ANON_KEY,
+
+              "Authorization":
+                "Bearer " +
+                SUPABASE_ANON_KEY,
+
+              "Content-Type":
+                "application/json",
+
+              "Prefer":
+                "return=minimal"
+
+            },
+
+            body:
+              JSON.stringify(
+                reserva
+              )
+
+          }
+        );
+
+
+      if(!respuesta.ok){
+
+        const errorText =
+          await respuesta.text();
+
+        console.error(
+          "Supabase:",
+          errorText
+        );
+
+        throw new Error(
+          "No se pudo guardar la reserva."
+        );
+
+      }
+
+
+      /* =========================
+         WHATSAPP
+      ========================= */
+
+      const mensaje =
+        "Hola GabyStudio 💕" +
+        "\n\n" +
+        "Quiero solicitar una reserva." +
+        "\n\n" +
+        "Servicio: " +
+        service.value +
+        "\n" +
+        "Precio publicado: $" +
+        selectedButton.dataset.price +
+        " USD" +
+        "\n" +
+        "Fecha: " +
+        date.value +
+        "\n" +
+        "Hora: " +
+        time.options[
+          time.selectedIndex
+        ].text +
+        "\n" +
+        "Nombre: " +
+        reserva.nombre +
+        "\n" +
+        "Teléfono: " +
+        reserva.telefono +
+        (
+          reserva.email
+            ? "\nEmail: " +
+              reserva.email
+            : ""
+        ) +
+        (
+          reserva.notas
+            ? "\nNotas: " +
+              reserva.notas
+            : ""
+        ) +
+        "\n\n" +
+        "Cupo asignado: Cupo " +
+        cupoDisponible +
+        "\n\n" +
+        "Quedo pendiente de la confirmación. 💕";
+
+
+      const whatsappURL =
+        "https://wa.me/" +
+        wa +
+        "?text=" +
+        encodeURIComponent(
+          mensaje
+        );
+
+
+      alert(
+        "¡Solicitud enviada correctamente! 💕\n\nCupo asignado: " +
+        cupoDisponible
+      );
+
+
+      window.open(
+        whatsappURL,
+        "_blank"
+      );
+
+
+      /* =========================
+         LIMPIAR FORMULARIO
+      ========================= */
+
+      form.reset();
+
+      service.value = "";
+
+      document.getElementById(
+        "selectedService"
+      ).textContent =
+        "Selecciona un servicio";
+
+      document
+        .querySelectorAll(".service-option")
+        .forEach(item =>
+          item.classList.remove(
+            "selected"
+          )
+        );
+
+      createTimeOptions();
+
+      update();
+
+    }catch(error){
+
+      console.error(error);
+
+      alert(
+        "No se pudo guardar la reserva. Revisa la conexión con Supabase."
+      );
+
+    }
 
   }
-
-});
+);
 
 </script>
 
