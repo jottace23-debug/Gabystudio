@@ -432,10 +432,23 @@ const service = document.getElementById("service");
 const date = document.getElementById("date");
 const time = document.getElementById("time");
 const summary = document.getElementById("bookingSummary");
+const selectedServices = document.getElementById("selectedServices");
+const servicesSummary = document.getElementById("servicesSummary");
+
 const wa = "584242087674";
 
-const SUPABASE_URL = "https://srabrfcodvmgzezilpex.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWJyZmNvZHZtZ3plemlscGV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExNjczMzIsImV4cCI6MjEwNjc0MzMzMn0.1x5ASVNHJyqqmGai8pLbjoNlifUScUkxuNmhvZxRels";
+const SUPABASE_URL =
+  "https://srabrfcodvmgzezilpex.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWJyZmNvZHZtZ3plemlscGV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExNjczMzIsImV4cCI6MjEwNjc0MzMzMn0.1x5ASVNHJyqqmGai8pLbjoNlifUScUkxuNmhvZxRels";
+
+
+/* =========================
+   SERVICIOS SELECCIONADOS
+========================= */
+
+let selectedServicesArray = [];
 
 
 /* =========================
@@ -443,11 +456,14 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 ========================= */
 
 const today = new Date();
+
 today.setMinutes(
-  today.getMinutes() - today.getTimezoneOffset()
+  today.getMinutes() -
+  today.getTimezoneOffset()
 );
 
-date.min = today.toISOString().slice(0,10);
+date.min =
+  today.toISOString().slice(0,10);
 
 
 /* =========================
@@ -456,37 +472,50 @@ date.min = today.toISOString().slice(0,10);
 
 const serviceDurations = {};
 
-document.querySelectorAll(".service-option").forEach(button => {
+document
+  .querySelectorAll(".service-option")
+  .forEach(button => {
 
-  const name =
-    button.querySelector("span").textContent.trim();
+    const name =
+      button
+        .querySelector("span")
+        .textContent
+        .trim();
 
-  const durationText =
-    button.dataset.duration || "";
+    const durationText =
+      button.dataset.duration || "";
 
-  let minutes = 30;
+    let minutes = 30;
 
-  if(durationText.includes("150")){
-    minutes = 150;
-  }else if(durationText.includes("120")){
-    minutes = 120;
-  }else if(durationText.includes("90")){
-    minutes = 90;
-  }else if(durationText.includes("60")){
-    minutes = 60;
-  }else if(durationText.includes("30")){
-    minutes = 30;
-  }else if(durationText.includes("15")){
-    minutes = 15;
-  }else if(durationText.includes("10")){
-    minutes = 10;
-  }else if(durationText.includes("5")){
-    minutes = 5;
-  }
+    if(durationText.includes("150")){
+      minutes = 150;
 
-  serviceDurations[name] = minutes;
+    }else if(durationText.includes("120")){
+      minutes = 120;
 
-});
+    }else if(durationText.includes("90")){
+      minutes = 90;
+
+    }else if(durationText.includes("60")){
+      minutes = 60;
+
+    }else if(durationText.includes("30")){
+      minutes = 30;
+
+    }else if(durationText.includes("15")){
+      minutes = 15;
+
+    }else if(durationText.includes("10")){
+      minutes = 10;
+
+    }else if(durationText.includes("5")){
+      minutes = 5;
+    }
+
+    serviceDurations[name] =
+      minutes;
+
+  });
 
 
 /* =========================
@@ -517,14 +546,19 @@ function createTimeOptions(){
 
       option.value = value;
 
-      const hh = h % 12 || 12;
+      const hh =
+        h % 12 || 12;
 
       option.textContent =
         hh +
         ":" +
         String(m).padStart(2,"0") +
         " " +
-        (h < 12 ? "a. m." : "p. m.");
+        (
+          h < 12
+            ? "a. m."
+            : "p. m."
+        );
 
       time.appendChild(option);
 
@@ -543,7 +577,8 @@ createTimeOptions();
 
 function horaAMinutos(hora){
 
-  const partes = hora.split(":");
+  const partes =
+    hora.split(":");
 
   return (
     Number(partes[0]) * 60 +
@@ -586,112 +621,31 @@ function horariosSeCruzan(
 
 /* =========================
    OBTENER DURACIÓN
+   SOPORTA VARIOS SERVICIOS
 ========================= */
 
 function obtenerDuracion(nombreServicio){
 
-  return serviceDurations[nombreServicio] || 30;
-
-}
-
-
-/* =========================
-   OBTENER CUPO
-========================= */
-
-function obtenerCupo(reserva){
-
-  const cupo =
-    Number(reserva.cupo);
-
-  // Reservas antiguas que todavía
-  // no tenían cupo quedan como Cupo 1
-  if(cupo >= 1 && cupo <= 3){
-    return cupo;
+  if(!nombreServicio){
+    return 30;
   }
 
-  return 1;
+  const servicios =
+    nombreServicio
+      .split(" + ")
+      .map(item => item.trim())
+      .filter(Boolean);
 
-}
+  let total = 0;
 
+  servicios.forEach(nombre => {
 
-/* =========================
-   VERIFICAR SI UN CUPO
-   ESTÁ OCUPADO
-========================= */
-
-function cupoEstaOcupado(
-  reservas,
-  horaNueva,
-  duracionNueva,
-  numeroCupo
-){
-
-  return reservas.some(reserva => {
-
-    const estado =
-      String(
-        reserva.estado || ""
-      ).toLowerCase();
-
-    if(
-      estado === "cancelada" ||
-      estado === "cancelado"
-    ){
-      return false;
-    }
-
-    const cupoExistente =
-      obtenerCupo(reserva);
-
-    if(cupoExistente !== numeroCupo){
-      return false;
-    }
-
-    const duracionExistente =
-      obtenerDuracion(
-        reserva.servicio
-      );
-
-    return horariosSeCruzan(
-      horaNueva,
-      duracionNueva,
-      reserva.hora,
-      duracionExistente
-    );
+    total +=
+      serviceDurations[nombre] || 30;
 
   });
 
-}
-
-
-/* =========================
-   BUSCAR PRIMER CUPO LIBRE
-========================= */
-
-function buscarCupoLibre(
-  reservas,
-  horaNueva,
-  duracionNueva
-){
-
-  for(let cupo = 1; cupo <= 3; cupo++){
-
-    const ocupado =
-      cupoEstaOcupado(
-        reservas,
-        horaNueva,
-        duracionNueva,
-        cupo
-      );
-
-    if(!ocupado){
-      return cupo;
-    }
-
-  }
-
-  return null;
+  return total || 30;
 
 }
 
@@ -701,127 +655,245 @@ function buscarCupoLibre(
 ========================= */
 
 document
-.querySelectorAll(".category-button")
-.forEach(button => {
+  .querySelectorAll(".category-button")
+  .forEach(button => {
 
-  button.addEventListener("click", () => {
+    button.addEventListener(
+      "click",
+      () => {
 
-    const category =
-      button.parentElement;
+        const category =
+          button.parentElement;
 
-    const services =
-      category.querySelector(
-        ".category-services"
-      );
+        const services =
+          category.querySelector(
+            ".category-services"
+          );
 
-    const icon =
-      button.querySelector("span");
+        const icon =
+          button.querySelector("span");
 
-    const isOpen =
-      services.classList.contains("open");
+        const isOpen =
+          services.classList.contains("open");
 
-    document
-      .querySelectorAll(".category-services")
-      .forEach(item =>
-        item.classList.remove("open")
-      );
+        document
+          .querySelectorAll(
+            ".category-services"
+          )
+          .forEach(item =>
+            item.classList.remove("open")
+          );
 
-    document
-      .querySelectorAll(".category-button span")
-      .forEach(item =>
-        item.textContent = "＋"
-      );
+        document
+          .querySelectorAll(
+            ".category-button span"
+          )
+          .forEach(item =>
+            item.textContent = "＋"
+          );
 
-    if(!isOpen){
+        if(!isOpen){
 
-      services.classList.add("open");
+          services.classList.add(
+            "open"
+          );
 
-      icon.textContent = "−";
+          icon.textContent = "−";
 
-    }
+        }
+
+      }
+    );
 
   });
 
-});
-
 
 /* =========================
-   SELECCIONAR SERVICIO
+   SELECCIONAR VARIOS SERVICIOS
 ========================= */
 
 document
-.querySelectorAll(".service-option")
-.forEach(button => {
+  .querySelectorAll(".service-option")
+  .forEach(button => {
 
-  button.addEventListener(
-    "click",
-    async () => {
+    button.addEventListener(
+      "click",
+      async () => {
 
-      const selectedService =
-        document.getElementById(
-          "selectedService"
-        );
+        const serviceName =
+          button
+            .querySelector("span")
+            .textContent
+            .trim();
 
-      const hiddenService =
-        document.getElementById(
-          "service"
-        );
+        const price =
+          Number(button.dataset.price);
 
-      const serviceName =
-        button
-          .querySelector("span")
-          .textContent
-          .trim();
+        const durationText =
+          button.dataset.duration || "";
 
-      const price =
-        button.dataset.price;
+        let duration = 30;
 
-      const duration =
-        button.dataset.duration;
+        if(durationText.includes("150")){
+          duration = 150;
 
-      hiddenService.value =
-        serviceName;
+        }else if(durationText.includes("120")){
+          duration = 120;
 
-      selectedService.textContent =
-        "✓ " +
-        serviceName +
-        " — $" +
-        price +
-        " · " +
-        duration;
+        }else if(durationText.includes("90")){
+          duration = 90;
 
-      document
-        .querySelectorAll(".service-option")
-        .forEach(item =>
-          item.classList.remove("selected")
-        );
+        }else if(durationText.includes("60")){
+          duration = 60;
 
-      button.classList.add("selected");
+        }else if(durationText.includes("30")){
+          duration = 30;
 
-      update();
+        }else if(durationText.includes("15")){
+          duration = 15;
 
-      document
-        .querySelectorAll(".category-services")
-        .forEach(item =>
-          item.classList.remove("open")
-        );
+        }else if(durationText.includes("10")){
+          duration = 10;
 
-      document
-        .querySelectorAll(".category-button span")
-        .forEach(item =>
-          item.textContent = "＋"
-        );
+        }else if(durationText.includes("5")){
+          duration = 5;
+        }
 
-      if(date.value){
 
-        await cargarDisponibilidad();
+        /* =========================
+           SI YA ESTÁ SELECCIONADO
+           LO QUITAMOS
+        ========================= */
+
+        const existingIndex =
+          selectedServicesArray.findIndex(
+            item =>
+              item.name === serviceName
+          );
+
+
+        if(existingIndex >= 0){
+
+          selectedServicesArray.splice(
+            existingIndex,
+            1
+          );
+
+          button.classList.remove(
+            "selected"
+          );
+
+
+        }else{
+
+          /* =========================
+             AGREGAR SERVICIO
+          ========================= */
+
+          selectedServicesArray.push({
+
+            name:
+              serviceName,
+
+            price:
+              price,
+
+            duration:
+              duration
+
+          });
+
+          button.classList.add(
+            "selected"
+          );
+
+        }
+
+
+        /* =========================
+           PRECIO TOTAL
+        ========================= */
+
+        const totalPrice =
+          selectedServicesArray.reduce(
+            (total, item) =>
+              total + item.price,
+            0
+          );
+
+
+        /* =========================
+           DURACIÓN TOTAL
+        ========================= */
+
+        const totalDuration =
+          selectedServicesArray.reduce(
+            (total, item) =>
+              total + item.duration,
+            0
+          );
+
+
+        /* =========================
+           MOSTRAR SERVICIOS
+        ========================= */
+
+        if(
+          selectedServicesArray.length === 0
+        ){
+
+          selectedServices.textContent =
+            "Selecciona uno o más servicios";
+
+        }else{
+
+          selectedServices.textContent =
+            "✓ " +
+            selectedServicesArray
+              .map(item => item.name)
+              .join(" + ");
+
+        }
+
+
+        /* =========================
+           MOSTRAR TOTAL
+        ========================= */
+
+        servicesSummary.textContent =
+          "Duración total: " +
+          totalDuration +
+          " min · Total: $" +
+          totalPrice;
+
+
+        /* =========================
+           GUARDAR SERVICIOS
+        ========================= */
+
+        service.value =
+          selectedServicesArray
+            .map(item => item.name)
+            .join(" + ");
+
+
+        update();
+
+
+        /* =========================
+           ACTUALIZAR DISPONIBILIDAD
+        ========================= */
+
+        if(date.value){
+
+          await cargarDisponibilidad();
+
+        }
 
       }
+    );
 
-    }
-  );
-
-});
+  });
 
 
 /* =========================
@@ -830,28 +902,39 @@ document
 
 function update(){
 
-  const selectedButton =
-    document.querySelector(
-      ".service-option.selected"
-    );
-
   if(
-    selectedButton &&
-    service.value
+    selectedServicesArray.length > 0
   ){
 
+    const totalPrice =
+      selectedServicesArray.reduce(
+        (total, item) =>
+          total + item.price,
+        0
+      );
+
+    const totalDuration =
+      selectedServicesArray.reduce(
+        (total, item) =>
+          total + item.duration,
+        0
+      );
+
     summary.textContent =
-      "Servicio: " +
-      service.value +
-      " · Precio: $" +
-      selectedButton.dataset.price +
-      " USD · Duración estimada: " +
-      selectedButton.dataset.duration;
+      "Servicios: " +
+      selectedServicesArray
+        .map(item => item.name)
+        .join(" + ") +
+      " · Precio total: $" +
+      totalPrice +
+      " USD · Duración total: " +
+      totalDuration +
+      " min";
 
   }else{
 
     summary.textContent =
-      "Selecciona un servicio para ver el resumen de tu solicitud.";
+      "Selecciona uno o más servicios para ver el resumen de tu solicitud.";
 
   }
 
@@ -860,6 +943,7 @@ function update(){
 
 /* =========================
    CARGAR DISPONIBILIDAD
+   UN SOLO CUPO
 ========================= */
 
 async function cargarDisponibilidad(){
@@ -879,24 +963,33 @@ async function cargarDisponibilidad(){
       "/rest/v1/reservas" +
       "?select=fecha,hora,servicio,estado,cupo" +
       "&fecha=eq." +
-      encodeURIComponent(date.value);
+      encodeURIComponent(
+        date.value
+      );
+
 
     const respuesta =
       await fetch(
         url,
         {
-          method: "GET",
+
+          method:
+            "GET",
 
           headers: {
+
             "apikey":
               SUPABASE_ANON_KEY,
 
             "Authorization":
               "Bearer " +
               SUPABASE_ANON_KEY
+
           }
+
         }
       );
+
 
     if(!respuesta.ok){
 
@@ -906,6 +999,7 @@ async function cargarDisponibilidad(){
 
     }
 
+
     const reservas =
       await respuesta.json();
 
@@ -914,7 +1008,7 @@ async function cargarDisponibilidad(){
 
 
     /* =========================
-       DURACIÓN DEL SERVICIO
+       DURACIÓN TOTAL NUEVA
     ========================= */
 
     const duracionNueva =
@@ -924,16 +1018,15 @@ async function cargarDisponibilidad(){
 
 
     /* =========================
-       REVISAR CADA HORARIO
+       REVISAR HORARIOS
     ========================= */
 
-    Array.from(time.options)
+    Array
+      .from(time.options)
       .forEach(option => {
 
         if(!option.value){
-
           return;
-
         }
 
 
@@ -958,7 +1051,8 @@ async function cargarDisponibilidad(){
 
         if(finNueva > 18 * 60){
 
-          option.disabled = true;
+          option.disabled =
+            true;
 
           option.textContent +=
             " — FUERA DE HORARIO";
@@ -969,121 +1063,73 @@ async function cargarDisponibilidad(){
 
 
         /* =========================
-           CONTAR CUPOS OCUPADOS
+           UN SOLO CUPO
         ========================= */
 
-        let cuposOcupados = 0;
+        const ocupado =
+          reservas.some(
+            reserva => {
+
+              const estado =
+                String(
+                  reserva.estado || ""
+                ).toLowerCase();
 
 
-        for(
-          let cupo = 1;
-          cupo <= 3;
-          cupo++
-        ){
+              /* Ignorar canceladas */
 
-          const ocupado =
-            reservas.some(
-              reserva => {
+              if(
+                estado === "cancelada" ||
+                estado === "cancelado" ||
+                estado === "cancelled"
+              ){
 
-                /* Ignorar reservas canceladas */
-
-                const estado =
-                  String(
-                    reserva.estado || ""
-                  ).toLowerCase();
-
-
-                if(
-                  estado === "cancelada" ||
-                  estado === "cancelado" ||
-                  estado === "cancelled"
-                ){
-
-                  return false;
-
-                }
-
-
-                /* Obtener cupo */
-
-                const cupoReserva =
-                  Number(
-                    reserva.cupo
-                  );
-
-
-                if(
-                  cupoReserva !== cupo
-                ){
-
-                  return false;
-
-                }
-
-
-                /* Hora de la reserva */
-
-                if(!reserva.hora){
-
-                  return false;
-
-                }
-
-
-                const horaReserva =
-                  reserva.hora
-                    .toString()
-                    .substring(0,5);
-
-
-                const inicioReserva =
-                  horaAMinutos(
-                    horaReserva
-                  );
-
-
-                /* Duración de la reserva */
-
-                const duracionReserva =
-                  obtenerDuracion(
-                    reserva.servicio
-                  );
-
-
-                const finReserva =
-                  inicioReserva +
-                  duracionReserva;
-
-
-                /* =========================
-                   COMPROBAR CRUCE DE HORARIOS
-                ========================= */
-
-                return (
-                  inicioNueva < finReserva &&
-                  finNueva > inicioReserva
-                );
+                return false;
 
               }
-            );
 
 
-          if(ocupado){
-
-            cuposOcupados++;
-
-          }
-
-        }
+              if(!reserva.hora){
+                return false;
+              }
 
 
-        /* =========================
-           SOLO BLOQUEAR CON 3 CUPOS
-        ========================= */
+              const horaReserva =
+                reserva.hora
+                  .toString()
+                  .substring(0,5);
 
-        if(cuposOcupados >= 3){
 
-          option.disabled = true;
+              const inicioReserva =
+                horaAMinutos(
+                  horaReserva
+                );
+
+
+              const duracionReserva =
+                obtenerDuracion(
+                  reserva.servicio
+                );
+
+
+              const finReserva =
+                inicioReserva +
+                duracionReserva;
+
+
+              return (
+                inicioNueva < finReserva &&
+                finNueva > inicioReserva
+              );
+
+            }
+          );
+
+
+        if(ocupado){
+
+          option.disabled =
+            true;
 
           option.textContent +=
             " — NO DISPONIBLE";
@@ -1113,9 +1159,7 @@ date.addEventListener(
   async () => {
 
     if(!date.value){
-
       return;
-
     }
 
 
@@ -1145,7 +1189,6 @@ date.addEventListener(
 
     date.setCustomValidity("");
 
-
     await cargarDisponibilidad();
 
   }
@@ -1163,10 +1206,16 @@ form.addEventListener(
     e.preventDefault();
 
 
-    if(!service.value){
+    /* =========================
+       VERIFICAR SERVICIOS
+    ========================= */
+
+    if(
+      selectedServicesArray.length === 0
+    ){
 
       alert(
-        "Selecciona un servicio."
+        "Selecciona al menos un servicio."
       );
 
       return;
@@ -1176,23 +1225,6 @@ form.addEventListener(
 
     if(!form.reportValidity()){
       return;
-    }
-
-
-    const selectedButton =
-      document.querySelector(
-        ".service-option.selected"
-      );
-
-
-    if(!selectedButton){
-
-      alert(
-        "Selecciona un servicio."
-      );
-
-      return;
-
     }
 
 
@@ -1218,11 +1250,29 @@ form.addEventListener(
     }
 
 
-    const duracionNueva =
-      obtenerDuracion(
-        service.value
+    /* =========================
+       TOTALES
+    ========================= */
+
+    const totalPrice =
+      selectedServicesArray.reduce(
+        (total, item) =>
+          total + item.price,
+        0
       );
 
+
+    const duracionNueva =
+      selectedServicesArray.reduce(
+        (total, item) =>
+          total + item.duration,
+        0
+      );
+
+
+    /* =========================
+       CREAR RESERVA
+    ========================= */
 
     const reserva = {
 
@@ -1230,9 +1280,7 @@ form.addEventListener(
         service.value,
 
       precio:
-        Number(
-          selectedButton.dataset.price
-        ),
+        totalPrice,
 
       fecha:
         date.value,
@@ -1261,12 +1309,16 @@ form.addEventListener(
         ).value || null,
 
       estado:
-        "pendiente"
+        "pendiente",
+
+      cupo:
+        1
 
     };
 
 
     try{
+
 
       /* =========================
          OBTENER RESERVAS DEL DÍA
@@ -1286,16 +1338,21 @@ form.addEventListener(
         await fetch(
           consultaURL,
           {
-            method: "GET",
+
+            method:
+              "GET",
 
             headers: {
+
               "apikey":
                 SUPABASE_ANON_KEY,
 
               "Authorization":
                 "Bearer " +
                 SUPABASE_ANON_KEY
+
             }
+
           }
         );
 
@@ -1314,21 +1371,71 @@ form.addEventListener(
 
 
       /* =========================
-         BUSCAR CUPO LIBRE
+         COMPROBAR QUE SIGA LIBRE
       ========================= */
 
-      const cupoDisponible =
-        buscarCupoLibre(
-          reservasExistentes,
-          reserva.hora,
-          duracionNueva
+      const horarioOcupado =
+        reservasExistentes.some(
+          reservaExistente => {
+
+            const estado =
+              String(
+                reservaExistente.estado || ""
+              ).toLowerCase();
+
+
+            if(
+              estado === "cancelada" ||
+              estado === "cancelado" ||
+              estado === "cancelled"
+            ){
+
+              return false;
+
+            }
+
+
+            if(
+              !reservaExistente.hora
+            ){
+
+              return false;
+
+            }
+
+
+            const horaExistente =
+              reservaExistente.hora
+                .toString()
+                .substring(0,5);
+
+
+            const duracionExistente =
+              obtenerDuracion(
+                reservaExistente.servicio
+              );
+
+
+            return horariosSeCruzan(
+
+              reserva.hora,
+
+              duracionNueva,
+
+              horaExistente,
+
+              duracionExistente
+
+            );
+
+          }
         );
 
 
-      if(cupoDisponible === null){
+      if(horarioOcupado){
 
         alert(
-          "Ese horario ya tiene los 3 cupos ocupados. Por favor selecciona otra hora."
+          "Ese horario acaba de ser ocupado. Por favor selecciona otra hora."
         );
 
         await cargarDisponibilidad();
@@ -1336,12 +1443,6 @@ form.addEventListener(
         return;
 
       }
-
-
-      /* Guardar el cupo */
-
-      reserva.cupo =
-        cupoDisponible;
 
 
       /* =========================
@@ -1353,7 +1454,9 @@ form.addEventListener(
           SUPABASE_URL +
           "/rest/v1/reservas",
           {
-            method: "POST",
+
+            method:
+              "POST",
 
             headers: {
 
@@ -1403,46 +1506,81 @@ form.addEventListener(
       ========================= */
 
       const mensaje =
+
         "Hola GabyStudio 💕" +
+
         "\n\n" +
+
         "Quiero solicitar una reserva." +
+
         "\n\n" +
-        "Servicio: " +
+
+        "Servicios: " +
+
         service.value +
+
         "\n" +
-        "Precio publicado: $" +
-        selectedButton.dataset.price +
+
+        "Precio total: $" +
+
+        totalPrice +
+
         " USD" +
+
         "\n" +
+
+        "Duración total: " +
+
+        duracionNueva +
+
+        " minutos" +
+
+        "\n" +
+
         "Fecha: " +
+
         date.value +
+
         "\n" +
+
         "Hora: " +
+
         time.options[
           time.selectedIndex
         ].text +
+
         "\n" +
+
         "Nombre: " +
+
         reserva.nombre +
+
         "\n" +
+
         "Teléfono: " +
+
         reserva.telefono +
+
         (
           reserva.email
             ? "\nEmail: " +
               reserva.email
             : ""
         ) +
+
         (
           reserva.notas
             ? "\nNotas: " +
               reserva.notas
             : ""
         ) +
+
         "\n\n" +
-        "Cupo asignado: Cupo " +
-        cupoDisponible +
+
+        "Cupo: 1" +
+
         "\n\n" +
+
         "Quedo pendiente de la confirmación. 💕";
 
 
@@ -1456,8 +1594,7 @@ form.addEventListener(
 
 
       alert(
-        "¡Solicitud enviada correctamente! 💕\n\nCupo asignado: " +
-        cupoDisponible
+        "¡Solicitud enviada correctamente! 💕"
       );
 
 
@@ -1475,22 +1612,32 @@ form.addEventListener(
 
       service.value = "";
 
-      document.getElementById(
-        "selectedService"
-      ).textContent =
-        "Selecciona un servicio";
+      selectedServicesArray = [];
+
+
+      selectedServices.textContent =
+        "Selecciona uno o más servicios";
+
+
+      servicesSummary.textContent =
+        "Duración total: 0 min · Total: $0";
+
 
       document
-        .querySelectorAll(".service-option")
+        .querySelectorAll(
+          ".service-option"
+        )
         .forEach(item =>
           item.classList.remove(
             "selected"
           )
         );
 
+
       createTimeOptions();
 
       update();
+
 
     }catch(error){
 
