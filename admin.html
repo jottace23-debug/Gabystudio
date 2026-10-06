@@ -844,7 +844,58 @@
   /* =================================
    ELIMINAR RESERVA DEFINITIVAMENTE
 ================================= */
+  
+window.cancelarReserva =
+  async function(id){
 
+    const confirmar =
+      confirm(
+        "¿Quieres cancelar esta reserva?"
+      );
+
+    if(!confirmar){
+      return;
+    }
+
+    try{
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("reservas")
+          .update({
+            estado: "cancelada"
+          })
+          .eq(
+            "id",
+            id
+          );
+
+      if(error){
+        throw error;
+      }
+
+      mostrarAdminMensaje(
+        "La reserva fue cancelada correctamente."
+      );
+
+      await cargarReservas();
+
+    }catch(error){
+
+      console.error(error);
+
+      mostrarAdminMensaje(
+        "No se pudo cancelar la reserva: " +
+        error.message,
+        "error"
+      );
+
+    }
+
+  };
+  
 window.eliminarReserva =
   async function(id){
 
