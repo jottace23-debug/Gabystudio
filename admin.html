@@ -797,21 +797,32 @@
 
 
           ${
-            !cancelada
-              ? `
-                <div style="margin-top:15px;">
+  !cancelada
+    ? `
+      <div style="margin-top:15px;">
 
-                  <button
-                    class="btn-cancelar"
-                    onclick="cancelarReserva('${reserva.id}')"
-                  >
-                    ❌ Cancelar reserva
-                  </button>
+        <button
+          class="btn-cancelar"
+          onclick="cancelarReserva('${reserva.id}')"
+        >
+          ❌ Cancelar reserva
+        </button>
 
-                </div>
-              `
-              : ""
-          }
+      </div>
+    `
+    : `
+      <div style="margin-top:15px;">
+
+        <button
+          class="btn-cancelar"
+          onclick="eliminarReserva('${reserva.id}')"
+        >
+          🗑️ Eliminar definitivamente
+        </button>
+
+      </div>
+    `
+}
 
         `;
 
@@ -830,66 +841,68 @@
      CANCELAR RESERVA
   ================================= */
 
-  window.cancelarReserva =
-    async function(id){
+  /* =================================
+   ELIMINAR RESERVA DEFINITIVAMENTE
+================================= */
 
-      const confirmar =
-        confirm(
-          "¿Seguro que quieres cancelar esta reserva?"
-        );
+window.eliminarReserva =
+  async function(id){
 
-
-      if(!confirmar){
-
-        return;
-
-      }
+    const confirmar =
+      confirm(
+        "⚠️ Esta acción eliminará definitivamente la reserva.\n\n¿Quieres continuar?"
+      );
 
 
-      try{
+    if(!confirmar){
 
-        const {
-          error
-        } =
-          await supabaseClient
-            .from("reservas")
-            .update({
-              estado:"cancelada"
-            })
-            .eq(
-              "id",
-              id
-            );
+      return;
+
+    }
 
 
-        if(error){
+    try{
 
-          throw error;
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("reservas")
+          .delete()
+          .eq(
+            "id",
+            id
+          );
 
-        }
 
+      if(error){
 
-        mostrarAdminMensaje(
-          "La reserva fue cancelada correctamente."
-        );
-
-
-        await cargarReservas();
-
-
-      }catch(error){
-
-        console.error(error);
-
-        mostrarAdminMensaje(
-          "No se pudo cancelar la reserva: " +
-          error.message,
-          "error"
-        );
+        throw error;
 
       }
 
-    };
+
+      mostrarAdminMensaje(
+        "La reserva fue eliminada definitivamente."
+      );
+
+
+      await cargarReservas();
+
+
+    }catch(error){
+
+      console.error(error);
+
+      mostrarAdminMensaje(
+        "No se pudo eliminar la reserva: " +
+        error.message,
+        "error"
+      );
+
+    }
+
+  };
 
 
   /* =================================
