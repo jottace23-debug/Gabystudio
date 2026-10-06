@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>GabyStudio | Administración</title>
+
+  <style>
+
+    *{
+      box-sizing:border-box;
+    }
+
+    body{
+      margin:0;
+      background:#fdf8f6;
+      color:#3d3033;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    .container{
+      width:min(1100px,94%);
+      margin:auto;
+    }
+
+    header{
+      background:linear-gradient(
+        180deg,
+        #f8e4e8,
+        #fdf8f6
+      );
+
+      padding:30px 20px;
+      text-align:center;
+    }
+
+    h1{
+      margin:0 0 8px;
+      color:#a85f72;
+      font-family:Georgia,serif;
+    }
+
+    .subtitulo{
+      margin:0;
+      color:#6b555b;
+    }
+
+    .card{
+      background:white;
+      border-radius:18px;
+      padding:24px;
+      margin:25px 0;
+      box-shadow:
+        0 5px 20px rgba(100,60,60,.10);
+    }
+
+    /* LOGIN */
+
+    #loginSection{
+      max-width:450px;
+      margin:50px auto;
+    }
+
+    input{
+      width:100%;
+      padding:13px;
+      border:1px solid #d9c4c9;
+      border-radius:10px;
+      margin:7px 0 14px;
+      font-size:16px;
+    }
+
+    button{
+      border:0;
+      border-radius:10px;
+      padding:12px 18px;
+      cursor:pointer;
+      font-size:15px;
+    }
+
+    .btn-principal{
+      width:100%;
+      background:#a85f72;
+      color:white;
+    }
+
+    .btn-principal:hover{
+      background:#914f61;
+    }
+
+    .btn-cancelar{
+      background:#b85c65;
+      color:white;
+    }
+
+    .btn-salir{
+      background:#6b555b;
+      color:white;
+    }
+
+    .mensaje{
+      margin-top:15px;
+      padding:12px;
+      border-radius:10px;
+      display:none;
+    }
+
+    .error{
+      background:#f8dfe2;
+      color:#8a3e48;
+    }
+
+    .exito{
+      background:#e1f3e5;
+      color:#397047;
+    }
+
+    /* ADMIN */
+
+    #adminSection{
+      display:none;
+    }
+
+    .barra{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:15px;
+      flex-wrap:wrap;
+    }
+
+    .filtros{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .filtros input{
+      width:auto;
+      margin:0;
+    }
+
+    .reserva{
+      border:1px solid #ead9dd;
+      border-radius:15px;
+      padding:18px;
+      margin-bottom:15px;
+      background:#fffafa;
+    }
+
+    .reserva-cabecera{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+
+    .fecha-hora{
+      font-size:19px;
+      font-weight:bold;
+      color:#a85f72;
+    }
+
+    .cupo{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:20px;
+      background:#f1d8df;
+      color:#8d5264;
+      font-weight:bold;
+    }
+
+    .dato{
+      margin:7px 0;
+    }
+
+    .dato strong{
+      color:#5b464c;
+    }
+
+    .estado{
+      display:inline-block;
+      padding:5px 9px;
+      border-radius:15px;
+      font-size:13px;
+      font-weight:bold;
+    }
+
+    .estado-activa{
+      background:#e2f3e5;
+      color:#367145;
+    }
+
+    .estado-cancelada{
+      background:#f5dfe1;
+      color:#8b444c;
+    }
+
+    .reserva-cancelada{
+      opacity:.65;
+    }
+
+    .sin-reservas{
+      text-align:center;
+      padding:35px;
+      color:#806d72;
+    }
+
+    .cargando{
+      text-align:center;
+      padding:30px;
+    }
+
+    @media(max-width:600px){
+
+      .card{
+        padding:18px;
+      }
+
+      .reserva-cabecera{
+        align-items:flex-start;
+      }
+
+      .btn-cancelar{
+        width:100%;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+<header>
+
+  <h1>GabyStudio</h1>
+
+  <p class="subtitulo">
+    Panel de administración
+  </p>
+
+</header>
+
+
+<div class="container">
+
+
+  <!-- =========================
+       LOGIN
+  ========================== -->
+
+  <section
+    id="loginSection"
+    class="card"
+  >
+
+    <h2>Acceso administrativo</h2>
+
+    <p>
+      Ingresa con el correo y contraseña
+      de administración.
+    </p>
+
+
+    <label>
+      Correo
+    </label>
+
+    <input
+      type="email"
+      id="email"
+      placeholder="correo@ejemplo.com"
+      autocomplete="email"
+    >
+
+
+    <label>
+      Contraseña
+    </label>
+
+    <input
+      type="password"
+      id="password"
+      placeholder="Contraseña"
+      autocomplete="current-password"
+    >
+
+
+    <button
+      class="btn-principal"
+      id="btnLogin"
+    >
+      Iniciar sesión
+    </button>
+
+
+    <div
+      id="loginMensaje"
+      class="mensaje error"
+    ></div>
+
+  </section>
+
+
+  <!-- =========================
+       PANEL
+  ========================== -->
+
+  <section id="adminSection">
+
+    <div class="card">
+
+      <div class="barra">
+
+        <div>
+
+          <h2 style="margin:0;">
+            Reservas
+          </h2>
+
+          <p
+            id="usuarioActual"
+            style="margin:5px 0 0;"
+          ></p>
+
+        </div>
+
+
+        <button
+          class="btn-salir"
+          id="btnSalir"
+        >
+          Cerrar sesión
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <div class="filtros">
+
+        <label>
+          Fecha:
+        </label>
+
+        <input
+          type="date"
+          id="filtroFecha"
+        >
+
+        <button
+          id="btnTodas"
+        >
+          Todas
+        </button>
+
+        <button
+          id="btnActualizar"
+        >
+          🔄 Actualizar
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div
+      id="listaReservas"
+      class="card"
+    >
+
+      <div class="cargando">
+        Cargando reservas...
+      </div>
+
+    </div>
+
+
+    <div
+      id="adminMensaje"
+      class="mensaje"
+    ></div>
+
+  </section>
+
+</div>
+
+
+<!-- =========================
+     SUPABASE
+========================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<script>
+
+  /* =================================
+     CONFIGURACIÓN SUPABASE
+  ================================= */
+
+  const SUPABASE_URL =
+    "https://srabrfcodvmgzezilpex.supabase.co";
+
+
+  /*
+    IMPORTANTE:
+
+    Pega aquí EXACTAMENTE la misma
+    Supabase ANON KEY que ya tienes
+    funcionando en tu index.html.
+
+    NO uses la service_role key.
+  */
+
+  const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWJyZmNvZHZtZ3plemlscGV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExNjczMzIsImV4cCI6MjEwNjc0MzMzMn0.1x5ASVNHJyqqmGai8pLbjoNlifUScUkxuNmhvZxRels";
+
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
+
+
+  /* =================================
+     ELEMENTOS
+  ================================= */
+
+  const loginSection =
+    document.getElementById(
+      "loginSection"
+    );
+
+  const adminSection =
+    document.getElementById(
+      "adminSection"
+    );
+
+  const email =
+    document.getElementById(
+      "email"
+    );
+
+  const password =
+    document.getElementById(
+      "password"
+    );
+
+  const btnLogin =
+    document.getElementById(
+      "btnLogin"
+    );
+
+  const btnSalir =
+    document.getElementById(
+      "btnSalir"
+    );
+
+  const listaReservas =
+    document.getElementById(
+      "listaReservas"
+    );
+
+  const filtroFecha =
+    document.getElementById(
+      "filtroFecha"
+    );
+
+  const btnTodas =
+    document.getElementById(
+      "btnTodas"
+    );
+
+  const btnActualizar =
+    document.getElementById(
+      "btnActualizar"
+    );
+
+  const loginMensaje =
+    document.getElementById(
+      "loginMensaje"
+    );
+
+  const adminMensaje =
+    document.getElementById(
+      "adminMensaje"
+    );
+
+  const usuarioActual =
+    document.getElementById(
+      "usuarioActual"
+    );
+
+
+  /* =================================
+     MENSAJES
+  ================================= */
+
+  function mostrarLoginError(texto){
+
+    loginMensaje.textContent =
+      texto;
+
+    loginMensaje.style.display =
+      "block";
+
+  }
+
+
+  function mostrarAdminMensaje(
+    texto,
+    tipo = "exito"
+  ){
+
+    adminMensaje.textContent =
+      texto;
+
+    adminMensaje.className =
+      "mensaje " + tipo;
+
+    adminMensaje.style.display =
+      "block";
+
+    setTimeout(() => {
+
+      adminMensaje.style.display =
+        "none";
+
+    },4000);
+
+  }
+
+
+  /* =================================
+     FORMATO FECHA
+  ================================= */
+
+  function formatoFecha(
+    fecha
+  ){
+
+    if(!fecha){
+      return "";
+    }
+
+    const partes =
+      fecha.split("-");
+
+    if(partes.length !== 3){
+      return fecha;
+    }
+
+    return (
+      partes[2] +
+      "/" +
+      partes[1] +
+      "/" +
+      partes[0]
+    );
+
+  }
+
+
+  /* =================================
+     CARGAR RESERVAS
+  ================================= */
+
+  async function cargarReservas(){
+
+    listaReservas.innerHTML =
+      '<div class="cargando">Cargando reservas...</div>';
+
+
+    try{
+
+      let consulta =
+        supabaseClient
+          .from("reservas")
+          .select(
+            "id,fecha,hora,servicio,nombre,telefono,email,notas,estado,cupo"
+          )
+          .order(
+            "fecha",
+            {
+              ascending:true
+            }
+          )
+          .order(
+            "hora",
+            {
+              ascending:true
+            }
+          );
+
+
+      if(filtroFecha.value){
+
+        consulta =
+          consulta.eq(
+            "fecha",
+            filtroFecha.value
+          );
+
+      }
+
+
+      const {
+        data,
+        error
+      } = await consulta;
+
+
+      if(error){
+
+        throw error;
+
+      }
+
+
+      mostrarReservas(
+        data || []
+      );
+
+
+    }catch(error){
+
+      console.error(error);
+
+      listaReservas.innerHTML =
+        '<div class="sin-reservas">' +
+        'No se pudieron cargar las reservas.' +
+        '<br><br>' +
+        error.message +
+        '</div>';
+
+    }
+
+  }
+
+
+  /* =================================
+     MOSTRAR RESERVAS
+  ================================= */
+
+  function mostrarReservas(
+    reservas
+  ){
+
+    if(!reservas.length){
+
+      listaReservas.innerHTML =
+        '<div class="sin-reservas">' +
+        'No hay reservas para mostrar.' +
+        '</div>';
+
+      return;
+
+    }
+
+
+    listaReservas.innerHTML = "";
+
+
+    reservas.forEach(
+      reserva => {
+
+        const div =
+          document.createElement(
+            "div"
+          );
+
+
+        const cancelada =
+          String(
+            reserva.estado || ""
+          ).toLowerCase() ===
+          "cancelada";
+
+
+        div.className =
+          "reserva" +
+          (
+            cancelada
+              ? " reserva-cancelada"
+              : ""
+          );
+
+
+        const estadoTexto =
+          cancelada
+            ? "CANCELADA"
+            : "ACTIVA";
+
+
+        const estadoClase =
+          cancelada
+            ? "estado-cancelada"
+            : "estado-activa";
+
+
+        const cupo =
+          reserva.cupo
+            ? "Cupo " + reserva.cupo
+            : "Sin cupo";
+
+
+        div.innerHTML = `
+
+          <div class="reserva-cabecera">
+
+            <div>
+
+              <div class="fecha-hora">
+
+                ${formatoFecha(reserva.fecha)}
+                —
+                ${reserva.hora || ""}
+
+              </div>
+
+              <div
+                style="margin-top:8px;"
+              >
+
+                <span class="cupo">
+                  ${cupo}
+                </span>
+
+                <span
+                  class="estado ${estadoClase}"
+                >
+                  ${estadoTexto}
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="dato">
+            <strong>Servicio:</strong>
+            ${reserva.servicio || ""}
+          </div>
+
+
+          <div class="dato">
+            <strong>Cliente:</strong>
+            ${reserva.nombre || ""}
+          </div>
+
+
+          <div class="dato">
+            <strong>Teléfono:</strong>
+            ${reserva.telefono || ""}
+          </div>
+
+
+          ${
+            reserva.email
+              ? `
+                <div class="dato">
+                  <strong>Email:</strong>
+                  ${reserva.email}
+                </div>
+              `
+              : ""
+          }
+
+
+          ${
+            reserva.notas
+              ? `
+                <div class="dato">
+                  <strong>Notas:</strong>
+                  ${reserva.notas}
+                </div>
+              `
+              : ""
+          }
+
+
+          ${
+            !cancelada
+              ? `
+                <div style="margin-top:15px;">
+
+                  <button
+                    class="btn-cancelar"
+                    onclick="cancelarReserva('${reserva.id}')"
+                  >
+                    ❌ Cancelar reserva
+                  </button>
+
+                </div>
+              `
+              : ""
+          }
+
+        `;
+
+
+        listaReservas.appendChild(
+          div
+        );
+
+      }
+    );
+
+  }
+
+
+  /* =================================
+     CANCELAR RESERVA
+  ================================= */
+
+  window.cancelarReserva =
+    async function(id){
+
+      const confirmar =
+        confirm(
+          "¿Seguro que quieres cancelar esta reserva?"
+        );
+
+
+      if(!confirmar){
+
+        return;
+
+      }
+
+
+      try{
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("reservas")
+            .update({
+              estado:"cancelada"
+            })
+            .eq(
+              "id",
+              id
+            );
+
+
+        if(error){
+
+          throw error;
+
+        }
+
+
+        mostrarAdminMensaje(
+          "La reserva fue cancelada correctamente."
+        );
+
+
+        await cargarReservas();
+
+
+      }catch(error){
+
+        console.error(error);
+
+        mostrarAdminMensaje(
+          "No se pudo cancelar la reserva: " +
+          error.message,
+          "error"
+        );
+
+      }
+
+    };
+
+
+  /* =================================
+     INICIAR SESIÓN
+  ================================= */
+
+  btnLogin.addEventListener(
+    "click",
+    async () => {
+
+      loginMensaje.style.display =
+        "none";
+
+
+      const correo =
+        email.value.trim();
+
+      const clave =
+        password.value;
+
+
+      if(!correo || !clave){
+
+        mostrarLoginError(
+          "Escribe tu correo y contraseña."
+        );
+
+        return;
+
+      }
+
+
+      btnLogin.disabled =
+        true;
+
+      btnLogin.textContent =
+        "Ingresando...";
+
+
+      try{
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient.auth
+            .signInWithPassword({
+
+              email:correo,
+
+              password:clave
+
+            });
+
+
+        if(error){
+
+          throw error;
+
+        }
+
+
+        mostrarPanel(
+          data.user
+        );
+
+
+      }catch(error){
+
+        console.error(error);
+
+        mostrarLoginError(
+          "Correo o contraseña incorrectos."
+        );
+
+      }
+
+
+      btnLogin.disabled =
+        false;
+
+      btnLogin.textContent =
+        "Iniciar sesión";
+
+    }
+  );
+
+
+  /* =================================
+     MOSTRAR PANEL
+  ================================= */
+
+  function mostrarPanel(
+    usuario
+  ){
+
+    loginSection.style.display =
+      "none";
+
+    adminSection.style.display =
+      "block";
+
+
+    usuarioActual.textContent =
+      usuario.email;
+
+
+    cargarReservas();
+
+  }
+
+
+  /* =================================
+     CERRAR SESIÓN
+  ================================= */
+
+  btnSalir.addEventListener(
+    "click",
+    async () => {
+
+      await supabaseClient.auth
+        .signOut();
+
+      adminSection.style.display =
+        "none";
+
+      loginSection.style.display =
+        "block";
+
+      email.value = "";
+
+      password.value = "";
+
+    }
+  );
+
+
+  /* =================================
+     FILTROS
+  ================================= */
+
+  filtroFecha.addEventListener(
+    "change",
+    () => {
+
+      cargarReservas();
+
+    }
+  );
+
+
+  btnTodas.addEventListener(
+    "click",
+    () => {
+
+      filtroFecha.value = "";
+
+      cargarReservas();
+
+    }
+  );
+
+
+  btnActualizar.addEventListener(
+    "click",
+    () => {
+
+      cargarReservas();
+
+    }
+  );
+
+
+  /* =================================
+     COMPROBAR SESIÓN EXISTENTE
+  ================================= */
+
+  async function comprobarSesion(){
+
+    const {
+      data
+    } =
+      await supabaseClient.auth
+        .getSession();
+
+
+    if(
+      data &&
+      data.session &&
+      data.session.user
+    ){
+
+      mostrarPanel(
+        data.session.user
+      );
+
+    }
+
+  }
+
+
+  comprobarSesion();
+
+</script>
+
+</body>
+</html>
