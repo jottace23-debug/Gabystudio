@@ -903,10 +903,13 @@ async function cargarDisponibilidad(){
     const reservas =
       await respuesta.json();
 
+
     createTimeOptions();
 
 
-    /* Duración del servicio seleccionado */
+    /* =========================
+       DURACIÓN DEL SERVICIO
+    ========================= */
 
     const duracionNueva =
       obtenerDuracion(
@@ -914,14 +917,19 @@ async function cargarDisponibilidad(){
       );
 
 
-    /* Revisar cada horario */
+    /* =========================
+       REVISAR CADA HORARIO
+    ========================= */
 
     Array.from(time.options)
       .forEach(option => {
 
         if(!option.value){
+
           return;
+
         }
+
 
         const horaNueva =
           option.value;
@@ -932,12 +940,15 @@ async function cargarDisponibilidad(){
             horaNueva
           );
 
+
         const finNueva =
           inicioNueva +
           duracionNueva;
 
 
-        /* No permitir que termine después de las 6 PM */
+        /* =========================
+           NO PASAR DE LAS 6 PM
+        ========================= */
 
         if(finNueva > 18 * 60){
 
@@ -951,7 +962,9 @@ async function cargarDisponibilidad(){
         }
 
 
-        /* Contar cuántos cupos están ocupados */
+        /* =========================
+           CONTAR CUPOS OCUPADOS
+        ========================= */
 
         let cuposOcupados = 0;
 
@@ -962,14 +975,94 @@ async function cargarDisponibilidad(){
           cupo++
         ){
 
-          if(
-            cupoEstaOcupado(
-              reservas,
-              horaNueva,
-              duracionNueva,
-              cupo
-            )
-          ){
+          const ocupado =
+            reservas.some(
+              reserva => {
+
+                /* Ignorar reservas canceladas */
+
+                const estado =
+                  String(
+                    reserva.estado || ""
+                  ).toLowerCase();
+
+
+                if(
+                  estado === "cancelada" ||
+                  estado === "cancelado" ||
+                  estado === "cancelled"
+                ){
+
+                  return false;
+
+                }
+
+
+                /* Obtener cupo */
+
+                const cupoReserva =
+                  Number(
+                    reserva.cupo
+                  );
+
+
+                if(
+                  cupoReserva !== cupo
+                ){
+
+                  return false;
+
+                }
+
+
+                /* Hora de la reserva */
+
+                if(!reserva.hora){
+
+                  return false;
+
+                }
+
+
+                const horaReserva =
+                  reserva.hora
+                    .toString()
+                    .substring(0,5);
+
+
+                const inicioReserva =
+                  horaAMinutos(
+                    horaReserva
+                  );
+
+
+                /* Duración de la reserva */
+
+                const duracionReserva =
+                  obtenerDuracion(
+                    reserva.servicio
+                  );
+
+
+                const finReserva =
+                  inicioReserva +
+                  duracionReserva;
+
+
+                /* =========================
+                   COMPROBAR CRUCE DE HORARIOS
+                ========================= */
+
+                return (
+                  inicioNueva < finReserva &&
+                  finNueva > inicioReserva
+                );
+
+              }
+            );
+
+
+          if(ocupado){
 
             cuposOcupados++;
 
@@ -978,7 +1071,9 @@ async function cargarDisponibilidad(){
         }
 
 
-        /* Si los 3 están ocupados */
+        /* =========================
+           SOLO BLOQUEAR CON 3 CUPOS
+        ========================= */
 
         if(cuposOcupados >= 3){
 
@@ -1012,14 +1107,18 @@ date.addEventListener(
   async () => {
 
     if(!date.value){
+
       return;
+
     }
+
 
     const d =
       new Date(
         date.value +
         "T12:00:00"
       );
+
 
     if(d.getDay() === 0){
 
@@ -1037,7 +1136,9 @@ date.addEventListener(
 
     }
 
+
     date.setCustomValidity("");
+
 
     await cargarDisponibilidad();
 
