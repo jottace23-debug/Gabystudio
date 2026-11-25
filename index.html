@@ -43,8 +43,8 @@ body{
 
 .logo{
   grid-area:logo;
-  width:260px;
-  height:260px;
+  width:285px;
+  height:285px;
   margin:0;
   flex-shrink:0;
   border-radius:50%;
@@ -71,6 +71,12 @@ body{
   color:#7d4057;
   font-size:46px;
   line-height:1.15;
+}
+
+.hero-accent{
+  color:#a34868;
+  font-style:normal;
+  font-weight:normal;
 }
 
 .tagline{
@@ -353,7 +359,7 @@ textarea{min-height:90px;resize:vertical}
 /* MÓVIL */
 @media(max-width:700px){
   .hero{padding-top:25px}
-  .logo{width:92px;height:92px}
+  .logo{width:115px;height:115px}
   .hero h1{font-size:29px}
   .about{
     grid-template-columns:1fr;
@@ -378,7 +384,7 @@ textarea{min-height:90px;resize:vertical}
 <header class="hero">
   <div class="hero-text">
     <p class="eyebrow">BELLEZA · CUIDADO · CONFIANZA</p>
-    <h1>La belleza es un arte.</h1>
+    <h1>La belleza es un <span class="hero-accent">arte.</span></h1>
     <div class="hero-actions">
       <a href="#reservas" class="hero-button">Reservar tu cita</a>
       <a href="#contacto" class="hero-button secondary">Nuestras redes y contacto</a>
