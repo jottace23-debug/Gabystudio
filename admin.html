@@ -1156,7 +1156,32 @@ window.eliminarReserva =
 
 
   comprobarSesion();
+supabaseClient.auth.onAuthStateChange(async (event, session) => {
 
+  if (event === 'PASSWORD_RECOVERY') {
+
+    const nuevaPassword = prompt("Escribe tu nueva contraseña:");
+
+    if (nuevaPassword) {
+
+      const { error } =
+        await supabaseClient.auth.updateUser({
+          password: nuevaPassword
+        });
+
+      if (error) {
+        alert("Error al cambiar la contraseña: " + error.message);
+      } else {
+        alert("Contraseña cambiada correctamente.");
+        window.location.href = "admin.html";
+      }
+
+    }
+
+  }
+
+});
+  
 </script>
 
 </body>
