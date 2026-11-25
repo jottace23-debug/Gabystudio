@@ -20,11 +20,8 @@ body{
 /* PORTADA */
 .hero{
   display:grid;
-  grid-template-columns:1fr auto;
-  grid-template-areas:
-    "frase logo"
-    "titulo logo"
-    "texto logo";
+  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-areas:"contenido logo";
   align-items:center;
   column-gap:35px;
   padding:45px 55px;
@@ -32,9 +29,10 @@ body{
   text-align:left;
 }
 
-.hero::before{
-  content:"BELLEZA · CUIDADO · CONFIANZA";
-  grid-area:frase;
+.hero-text{grid-area:contenido;max-width:520px}
+
+.eyebrow{
+  margin:0 0 14px;
   color:#9b536d;
   font-size:13px;
   letter-spacing:3px;
@@ -65,49 +63,71 @@ body{
 }
 
 .hero h1{
-  grid-area:titulo;
-  margin:15px 0;
-  font-family:'Palatino Linotype','Book Antiqua',Palatino,serif;
-  font-style:italic;
-  font-weight:400;
-  letter-spacing:-1px;
-  color:#874b63;
+  margin:0 0 24px;
+  font-family:Georgia,"Times New Roman",serif;
+  font-weight:normal;
+  color:#171313;
   font-size:46px;
-  line-height:1.15;
-  text-shadow:0 1px 1px rgba(125,64,87,.08);
+  line-height:1.12;
 }
 
-.tagline{
-  grid-area:texto;
-  margin:0;
-  font-family:Georgia,serif;
+.hero h1 em{
+  color:#a34868;
   font-style:italic;
-  color:#7d4057;
-  font-size:19px;
 }
+
+.hero-actions{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:12px;
+}
+
+.hero-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:48px;
+  padding:13px 23px;
+  border:1px solid #a83f65;
+  border-radius:28px;
+  background:#a83f65;
+  color:#fff;
+  font-size:14px;
+  font-weight:bold;
+  text-decoration:none;
+  transition:background .2s ease,transform .2s ease;
+}
+
+.hero-button:hover{
+  background:#913653;
+  transform:translateY(-1px);
+}
+
+.hero-button.secondary{
+  background:#fffaf8;
+  color:#8d4059;
+  border-color:#c98b9c;
+}
+
+.hero-button.secondary:hover{background:#f9e8ec}
 
 @media(max-width:650px){
   .hero{
     grid-template-columns:1fr;
-    grid-template-areas:
-      "frase"
-      "titulo"
-      "logo"
-      "texto";
+    grid-template-areas:"contenido" "logo";
     text-align:center;
     justify-items:center;
-    gap:15px;
+    gap:22px;
     padding:30px 18px;
   }
 
-  .logo{
-    width:190px;
-    height:190px;
-  }
-
-  .hero h1{
-    font-size:34px;
-  }
+  .hero-text{max-width:100%}
+  .eyebrow{font-size:11px;letter-spacing:2px}
+  .hero h1{font-size:34px;margin-bottom:20px}
+  .hero-actions{justify-content:center}
+  .hero-button{min-height:45px;padding:12px 18px}
+  .logo{width:190px;height:190px}
 }
 
 /* PRESENTACIÓN */
@@ -317,8 +337,11 @@ textarea{min-height:90px;resize:vertical}
 <header class="hero">
   <div class="hero-text">
     <p class="eyebrow">BELLEZA · CUIDADO · CONFIANZA</p>
-    <h1>La belleza es un arte.</h1>
-    <a href="#reservas" class="hero-button">Reservar tu cita</a>
+    <h1>La belleza<br>es un <em>arte.</em></h1>
+    <div class="hero-actions">
+      <a href="#reservas" class="hero-button">Reservar tu cita</a>
+      <a href="#reservas" class="hero-button secondary">Ver servicios y precios</a>
+    </div>
   </div>
 
   <div class="logo">
@@ -361,7 +384,7 @@ textarea{min-height:90px;resize:vertical}
 </section>
 
 <main class="container">
-<section class="card">
+<section class="card" id="reservas">
 
 <h2>Reserva tu cita</h2>
 
