@@ -20,26 +20,40 @@ body{
 /* PORTADA */
 .hero{
   display:grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns:1fr auto;
+  grid-template-areas:
+    "frase logo"
+    "titulo logo"
+    "texto logo";
   align-items:center;
-  gap:35px;
-  padding:55px 7%;
-  background:linear-gradient(135deg,#f4d8df 0%,#fff8f8 55%,#efd0d9 100%);
+  column-gap:35px;
+  padding:45px 55px;
+  background:linear-gradient(135deg,#f4d8df,#fcebed);
   text-align:left;
-  min-height:360px;
+}
+
+.hero::before{
+  content:"BELLEZA · CUIDADO · CONFIANZA";
+  grid-area:frase;
+  color:#9b536d;
+  font-size:13px;
+  letter-spacing:3px;
+  font-weight:bold;
 }
 
 .logo{
-  width:250px;
-  height:250px;
-  margin:auto;
+  grid-area:logo;
+  width:260px;
+  height:260px;
+  margin:0;
+  flex-shrink:0;
   border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
-  border:4px solid #a85b75;
+  border:4px solid #c47a91;
   background:#fffaf8;
-  box-shadow:0 8px 25px rgba(100,45,65,.18);
+  box-shadow:0 8px 25px rgba(100,60,60,.15);
   overflow:hidden;
 }
 
@@ -51,23 +65,45 @@ body{
 }
 
 .hero h1{
-  display:inline-block;
-  margin:0 0 15px;
-  padding:12px 22px;
+  grid-area:titulo;
+  margin:15px 0;
   font-family:Georgia,serif;
-  color:#fff8f8;
-  background:#7d4057;
-  border-radius:6px;
-  font-size:42px;
-  line-height:1.1;
+  color:#7d4057;
+  font-size:46px;
+  line-height:1.15;
 }
 
 .tagline{
+  grid-area:texto;
   margin:0;
   font-family:Georgia,serif;
   font-style:italic;
   color:#7d4057;
-  font-size:24px;
+  font-size:19px;
+}
+
+@media(max-width:650px){
+  .hero{
+    grid-template-columns:1fr;
+    grid-template-areas:
+      "frase"
+      "titulo"
+      "logo"
+      "texto";
+    text-align:center;
+    justify-items:center;
+    gap:15px;
+    padding:30px 18px;
+  }
+
+  .logo{
+    width:190px;
+    height:190px;
+  }
+
+  .hero h1{
+    font-size:34px;
+  }
 }
 
 /* PRESENTACIÓN */
