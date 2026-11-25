@@ -20,8 +20,11 @@ body{
 /* PORTADA */
 .hero{
   display:grid;
-  grid-template-columns:minmax(0,1fr) auto;
-  grid-template-areas:"contenido logo";
+  grid-template-columns:1fr auto;
+  grid-template-areas:
+    "frase logo"
+    "titulo logo"
+    "texto logo";
   align-items:center;
   column-gap:35px;
   padding:45px 55px;
@@ -29,10 +32,9 @@ body{
   text-align:left;
 }
 
-.hero-text{grid-area:contenido;max-width:520px}
-
-.eyebrow{
-  margin:0 0 14px;
+.hero::before{
+  content:"BELLEZA · CUIDADO · CONFIANZA";
+  grid-area:frase;
   color:#9b536d;
   font-size:13px;
   letter-spacing:3px;
@@ -63,71 +65,46 @@ body{
 }
 
 .hero h1{
-  margin:0 0 24px;
-  font-family:Georgia,"Times New Roman",serif;
-  font-weight:normal;
-  color:#171313;
+  grid-area:titulo;
+  margin:15px 0;
+  font-family:Georgia,serif;
+  color:#7d4057;
   font-size:46px;
-  line-height:1.12;
+  line-height:1.15;
 }
 
-.hero h1 em{
-  color:#a34868;
+.tagline{
+  grid-area:texto;
+  margin:0;
+  font-family:Georgia,serif;
   font-style:italic;
+  color:#7d4057;
+  font-size:19px;
 }
-
-.hero-actions{
-  display:flex;
-  flex-wrap:wrap;
-  align-items:center;
-  gap:12px;
-}
-
-.hero-button{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-height:48px;
-  padding:13px 23px;
-  border:1px solid #a83f65;
-  border-radius:28px;
-  background:#a83f65;
-  color:#fff;
-  font-size:14px;
-  font-weight:bold;
-  text-decoration:none;
-  transition:background .2s ease,transform .2s ease;
-}
-
-.hero-button:hover{
-  background:#913653;
-  transform:translateY(-1px);
-}
-
-.hero-button.secondary{
-  background:#fffaf8;
-  color:#8d4059;
-  border-color:#c98b9c;
-}
-
-.hero-button.secondary:hover{background:#f9e8ec}
 
 @media(max-width:650px){
   .hero{
     grid-template-columns:1fr;
-    grid-template-areas:"contenido" "logo";
+    grid-template-areas:
+      "frase"
+      "titulo"
+      "logo"
+      "texto";
     text-align:center;
     justify-items:center;
-    gap:22px;
+    gap:15px;
     padding:30px 18px;
   }
 
-  .hero-text{max-width:100%}
-  .eyebrow{font-size:11px;letter-spacing:2px}
-  .hero h1{font-size:34px;margin-bottom:20px}
+  .logo{
+    width:190px;
+    height:190px;
+  }
+
+  .hero h1{
+    font-size:34px;
+  }
   .hero-actions{justify-content:center}
-  .hero-button{min-height:45px;padding:12px 18px}
-  .logo{width:190px;height:190px}
 }
 
 /* PRESENTACIÓN */
@@ -287,6 +264,33 @@ textarea{min-height:90px;resize:vertical}
   background:#f8eef0;color:#75555c;font-size:14px;
 }
 
+/* BOTONES DE PORTADA */
+.hero-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:24px;
+}
+.hero-button{
+  display:inline-block;
+  padding:13px 21px;
+  border-radius:999px;
+  background:#a85f72;
+  color:#fff;
+  text-decoration:none;
+  font-size:15px;
+  font-weight:bold;
+  box-shadow:0 5px 14px rgba(120,65,85,.15);
+  transition:background .2s ease, transform .2s ease;
+}
+.hero-button:hover{background:#914f61;transform:translateY(-1px)}
+.hero-button.secondary{
+  background:#fffaf8;
+  color:#914f61;
+  border:1px solid #c98b9b;
+}
+.hero-button.secondary:hover{background:#f8e8ec}
+
 /* BOTÓN */
 .submit-button{
   width:100%;padding:15px;margin-top:10px;border:0;
@@ -302,6 +306,43 @@ textarea{min-height:90px;resize:vertical}
   background:#faf1f2;border:1px solid #ead7da;
   font-size:14px;line-height:1.6;
 }
+
+/* REDES Y CONTACTO */
+.contact-section{
+  width:min(920px,92%);
+  margin:0 auto 35px;
+  padding:30px 22px;
+  text-align:center;
+  background:linear-gradient(135deg,#f8e8ec,#fff8f7);
+  border:1px solid #efd9df;
+  border-radius:22px;
+  box-shadow:0 8px 25px rgba(80,50,50,.08);
+}
+.contact-section h2{margin-bottom:8px}
+.contact-section p{color:#755b62;line-height:1.6;margin:0 0 20px}
+.contact-links{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:12px;
+}
+.contact-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-width:190px;
+  padding:13px 19px;
+  border-radius:999px;
+  background:#a85f72;
+  color:#fff;
+  text-decoration:none;
+  font-weight:bold;
+  transition:background .2s ease,transform .2s ease;
+}
+.contact-link:hover{background:#914f61;transform:translateY(-1px)}
+.contact-link.instagram{background:#fff;color:#914f61;border:1px solid #c98b9b}
+.contact-link.instagram:hover{background:#f8e8ec}
 
 /* PIE */
 .footer{
@@ -337,10 +378,10 @@ textarea{min-height:90px;resize:vertical}
 <header class="hero">
   <div class="hero-text">
     <p class="eyebrow">BELLEZA · CUIDADO · CONFIANZA</p>
-    <h1>La belleza<br>es un <em>arte.</em></h1>
+    <h1>La belleza es un arte.</h1>
     <div class="hero-actions">
       <a href="#reservas" class="hero-button">Reservar tu cita</a>
-      <a href="#reservas" class="hero-button secondary">Ver servicios y precios</a>
+      <a href="#contacto" class="hero-button secondary">Nuestras redes y contacto</a>
     </div>
   </div>
 
@@ -384,7 +425,7 @@ textarea{min-height:90px;resize:vertical}
 </section>
 
 <main class="container">
-<section class="card" id="reservas">
+<section class="card">
 
 <h2>Reserva tu cita</h2>
 
@@ -513,6 +554,19 @@ Selecciona un servicio para ver el resumen de tu solicitud.
 </form>
 </section>
 </main>
+
+<section class="contact-section" id="contacto">
+  <h2>Nuestras redes y contacto</h2>
+  <p>Estamos aquí para atenderte y ayudarte a reservar tu próxima cita. 💕</p>
+  <div class="contact-links">
+    <a class="contact-link instagram" href="https://www.instagram.com/gaby_studio28/" target="_blank" rel="noopener noreferrer" aria-label="Visitar Instagram de GabyStudio">
+      Instagram · @gaby_studio28
+    </a>
+    <a class="contact-link" href="https://wa.me/584242087674" target="_blank" rel="noopener noreferrer" aria-label="Contactar a GabyStudio por WhatsApp">
+      WhatsApp · Escríbenos
+    </a>
+  </div>
+</section>
 
 <footer class="footer">
 GabyStudio · La belleza es un arte
