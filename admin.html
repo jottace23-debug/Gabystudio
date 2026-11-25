@@ -1156,6 +1156,11 @@ window.eliminarReserva =
 
 
   comprobarSesion();
+
+  if (window.location.hash.includes("type=recovery")) {
+  window.location.href = "admin.html" + window.location.hash;
+}
+  
 supabaseClient.auth.onAuthStateChange(async (event, session) => {
 
   if (event === 'PASSWORD_RECOVERY') {
