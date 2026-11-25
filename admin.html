@@ -1165,52 +1165,6 @@ window.eliminarReserva =
 
   comprobarSesion();
 
-  const btnRecuperar =
-document.getElementById("btnRecuperar");
-
-btnRecuperar?.addEventListener(
-  "click",
-  async () => {
-
-    const correo =
-      prompt(
-        "Escribe tu correo de administración:"
-      );
-
-    if (!correo) {
-      return;
-    }
-
-    const {
-      error
-    } =
-      await supabaseClient.auth
-        .resetPasswordForEmail(
-          correo,
-          {
-            redirectTo:
-              "https://gabystudio.onrender.com/admin.html"
-          }
-        );
-
-    if (error) {
-
-      alert(
-        "Error al enviar la recuperación: " +
-        error.message
-      );
-
-    } else {
-
-      alert(
-        "Correo de recuperación enviado. Revisa tu correo."
-      );
-
-    }
-
-  }
-);
-
   if (window.location.hash.includes("type=recovery")) {
   window.location.href = "admin.html" + window.location.hash;
 }
